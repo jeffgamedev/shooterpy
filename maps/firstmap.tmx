@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" width="100" height="100" tilewidth="32" tileheight="32">
+ <tileset firstgid="1" name="shooter1ii" tilewidth="32" tileheight="32">
+  <image source="shooter1ii.png" width="640" height="400"/>
+ </tileset>
+ <layer name="ground/floor" width="100" height="100">
+  <data encoding="base64" compression="zlib">
+   eJzt2kFuwjAQQNFIwBEAcf+LthskZCXGTBI8Dm/xNojW8nwFErenaZpOG7q9eL52f1F7H/uYm/VDi5DLv2vApaGJFrEe54CyRzn7Uu99jmLLHmWX3nsb0R490OMo1vSI3AdcE+w5M9dHLnrk4vMqlzU9Ij/Xe7/ZfbuHa6nu3Txqc4z0cD2t02u+Le9/ngHcP/i9o9ujR8tnVGu/ubP9I1uaY7RVZN1S7Wz/6Gpz6dmj91wy9jjiutktzSX6LNh6D6tHrrm0rrv0t8ujPs9k7zH3HVV7Vu09Tz30+Oa6784V9Nh23dbznK3vt7Pq3WOP84GRZd/HL/Xoda/4yXPML/UYgR656JGLHrnokYseueiRh///AgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMjjD1u6hF0=
+  </data>
+ </layer>
+ <layer name="walls/trees" width="100" height="100">
+  <data encoding="base64" compression="zlib">
+   eJzt2DEOgzAQRUGa3P/KlDQETBzjv/KMRIlB+ySDvG0k+3RcAEB9/gPq0yOLHln0yKJHFt//ey2zmDWjFXt8kzCLhHdIMWIWT/coPQ5X+9Wvc2q5T49zV3PR4316ZLnrMer8So9zs+bS+tzVzjMr9OhZuxo9suiRJaXHP78FevQ9t9Lao+mRZeaZ7qh/18o90umRRY8semTRI4seWfTIstr5LgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAC02gER3gQb
+  </data>
+ </layer>
+</map>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" width="100" height="100" tilewidth="32" tileheight="32">
+ <tileset firstgid="1" name="shooter1ii" tilewidth="32" tileheight="32">
+  <image source="shooter1ii.png" width="640" height="400"/>
+ </tileset>
+ <layer name="Tile Layer 1" width="100" height="100">
+  <data encoding="base64" compression="zlib">
+   eJzt0bsKwkAQhtEQsREUtBG10pD3f0WnsAhL4gVidtmc4sAUU/zwtU3TtEA2XQEbanB+uYRruOlRfI9jOIU+kfbQZD5z9NDlPz3SJr/0QI+1+aaHLstJO6Q9uombPMYa7MOhgG1rlTa5h0cBu2q3GXjXg+V7TDXZhe1A7s21SluMNdEjf5exn2GT3HvX4FMP8nbJvQNNAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAKjLE9LDVuY=
+  </data>
+ </layer>
+</map>
