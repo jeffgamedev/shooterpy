@@ -1,3 +1,4 @@
+###################################################################
 # Overlay contains Pygame code to display menus, textboxes, etc
 # created 10/20/12 
 ###################################################################
@@ -5,19 +6,26 @@
 import pygame
 
 class TextBox:
-    def __init__(self, surface, font, color, textcolor, bcolor, position, size): # position: (x, y) # size (width, height)
-        self.surface = surface
-        self.font = font
-        self.color = color # should be in (r, g, b) format
-        self.borderColor = bcolor # should be in (r, g, b) format
+    def __init__(self, destinationSurface, font, bgcolor, textcolor, borderColor, position, size):
+        """Does all the set up for the look and position of the TextBox 
+        on the screen. Message is set separately. Idea: Create one textbox for the game, and
+        reuse it as many times as needed by resetting the text and then calling Show()."""
+        
+        self.destinationSurface = destinationSurface # eg. the screen
+        self.tempSurface = pygame.Surface(size) #holding place to be displayed
+        self.font = font # pygame font object
+        self.bgcolor = bgcolor # should be in (r, g, b) format
+        self.borderColor = borderColor # should be in (r, g, b) format
         self.rect = pygame.Rect ( position, size )
-        self.borderRect = pygame.Rect((0+1,0+1), (780-2, 190-2))
+        self.borderRect = pygame.Rect((1,1), (size[0]-2, size[1]-2))
         self.textcolor = textcolor
         self.linepacing = 0
         self.textMargin = 10
         self.lineWidth = size[0]-self.textMargin*2
-
-    def splitMessage( self, message_text ):
+        self.portrait = None #this will contain an image if chosen to
+        
+    def SplitMessage( self, message_text ):
+        """Does the word-wrap logic for the message to be displayed"""
         lineList = []   # lists of lines to be returned and rendered
         temp = ""       # temp holding place for lines
         
@@ -26,10 +34,11 @@ class TextBox:
             ch = message_text[0]
             message_text = message_text[1:]
             
-#            if ch == '\n'.:
-#                lineList += temp
-#               temp = ""
-#                continue
+            # TODO: Allow hard returns in message_text contents
+            #            if ch == '\n'.:
+            #                lineList += temp
+            #               temp = ""
+            #                continue
             
             temp += ch
             
@@ -48,28 +57,59 @@ class TextBox:
                 lineList += [temp.strip()]
                 temp = ""
         lineList += [temp.strip()]
-              
         return lineList
-            
-    def showTextOnly(self, message_text):
-        # Textbox background
-        tb_surface = pygame.Surface(self.rect.size)
-        tb_surface.fill(self.color)
-        tb_surface.set_alpha(200)
+    
+    def SetText(self, message_text):
+        """Used to set the message to be seen when the TextBox is displayed."""
+        self.DrawBoxToTempSurface()
         
-        # Textbox Border
-        pygame.draw.rect(tb_surface, self.borderColor, self.borderRect, 1 )
+        if self.portrait is not None:
+            self.DrawPortraitToTempSurface()        
         
+        self.DrawTextToTempSurface(message_text)
+
+    def SetPortrait(self, filename=None):
+        """Sets the portraitImage"""
+        if filename is None:
+            self.portrait = None
+        else:
+            self.portrait = pygame.image.load("../gfx/portraits/" + filename)
         
-        # Text Display: Need to add word-wrapping
+    def NewDialog(self, image_filename, message_text):
+        """Dialog in the sense of a character speaking. Accompanied by a portrait image."""
+        self.SetPortrait(image_filename)
+        self.SetText(message_text)
+        
+    def DrawPortraitToTempSurface(self):
+        portloc = (self.textMargin,self.textMargin/2)
+        self.tempSurface.blit(self.portrait, portloc)
+        
+    # Sets the text and draws it to a surface to be used
+    def DrawTextToTempSurface(self, message_text):
+        """Draws only the words of the textbox to the temporary surface"""
         spacing = self.font.size("ABC")[1]+ self.linepacing
         i = 0
-        
-        for line in self.splitMessage(message_text):
+
+        portrait_margin = 0
+        if self.portrait is not None:
+            portrait_margin = self.portrait.get_width()+self.textMargin
+
+        for line in self.SplitMessage(message_text):
             label = self.font.render(line, 1, self.textcolor)
-            tb_surface.blit(label, (self.textMargin, i*spacing+self.textMargin))
+            self.tempSurface.blit(label, (self.textMargin+portrait_margin, i*spacing+self.textMargin))
             i+=1
-            
-        # Blit to screen surface
-        self.surface.blit(tb_surface, self.rect)
+      
+    def DrawBoxToTempSurface(self):
+        """Draws the TextBox background and border to a temporary Surface to be displayed
+        with shown"""
+        # Textbox background
+        self.tempSurface.fill(self.bgcolor)
+        #self.textSurface.set_alpha(200)
+        
+        # Textbox Border
+        pygame.draw.rect(self.tempSurface, self.borderColor, self.borderRect, 1 )
+
+    def Show(self):
+        """Displays the textbox that has been created"""
+        self.destinationSurface.blit(self.tempSurface, self.rect)
         
