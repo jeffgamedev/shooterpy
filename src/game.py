@@ -14,9 +14,10 @@
 #	http://inventwithpython.com/pygamecheatsheet.png
 ############################################################
 
-import pygame, sys
+import pygame, sys, overlay
 import settings # for constants, etc
 from pygame.locals import *
+from map import Map
 
 pygame.init()
 fpsClock = pygame.time.Clock()
@@ -24,13 +25,24 @@ fpsClock = pygame.time.Clock()
 windowSurfaceObject = pygame.display.set_mode((settings.SCREEN_WIDTH, settings.SCREEN_HEIGHT))
 
 pygame.display.set_caption('Shooter 1, II')
-fontObj = pygame.font.Font('freesansbold.ttf', 32)
+fontObj = pygame.font.Font('freesansbold.ttf', 22)
 msg = 'Hello World'
 
 background_color = pygame.Color( 0, 0, 0)
 
+#Testing TextBoxes
+textbox = overlay.TextBox(windowSurfaceObject, fontObj, settings.TEXTBOX_COLOR, settings.TEXTBOX_TEXT_COLOR, settings.TEXTBOX_BORDER_COLOR, settings.TEXTBOX_POSITION, settings.TEXTBOX_SIZE)
+textbox.NewDialog("blane.png", "The day has come to defeat that heinous imposter!")
+
+map = Map()
+
+map.loadMap("../maps/firstmap.tmx")
+
+
 while True: # primary game loop
 	windowSurfaceObject.fill(background_color)
+	map.render(windowSurfaceObject)
+	textbox.Show()
 	pygame.display.update()
 	fpsClock.tick(30);
 
