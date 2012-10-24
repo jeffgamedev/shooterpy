@@ -3,7 +3,7 @@
 # created 10/20/12 
 ###################################################################
 
-import pygame
+import pygame, settings
 
 class TextBox:
     def __init__(self, destinationSurface, font, bgcolor, textcolor, borderColor, position, size, opacity=255):
@@ -118,4 +118,30 @@ class TextBox:
     def Show(self):
         """Displays the textbox that has been created"""
         self.destinationSurface.blit(self.tempSurface, self.rect)
+        
+class TextBoxSystem:
+    """ Handles textbox functionality and user interaction for the main game loop"""
+    def __init__(self, windowSurfaceObject):
+        self.fontObj = pygame.font.Font('freesansbold.ttf', 22)
+        self.textbox = TextBox(windowSurfaceObject, self.fontObj, settings.TEXTBOX_COLOR, settings.TEXTBOX_TEXT_COLOR, settings.TEXTBOX_BORDER_COLOR, settings.TEXTBOX_POSITION, settings.TEXTBOX_SIZE, settings.TEXTBOX_OPACITY)
+        self.Focus = False # True means that the textbox is being shown and await enter to remove
+        
+    def Display(self):
+        """Put this in the main game loop. Will only display if the textbox has focus."""
+        if self.Focus:
+            self.textbox.Show()
+        
+    def getInput(self, event):
+        """Put this in the events loop"""
+        if event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN:
+            self.Focus = False #remove
+        
+    def New(self, portrait, message):
+        """Creates a new textbox, and set Focus to true"""
+        if self.Focus != True:
+            self.textbox.NewDialog(portrait, message)
+            self.Focus = True
+        else:
+            print "Bug: Cannot create a new textbox while another one is currently being shown"
+            print "I am creating an event Queue system to handle this."
         
