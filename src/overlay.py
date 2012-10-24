@@ -6,7 +6,7 @@
 import pygame
 
 class TextBox:
-    def __init__(self, destinationSurface, font, bgcolor, textcolor, borderColor, position, size):
+    def __init__(self, destinationSurface, font, bgcolor, textcolor, borderColor, position, size, opacity=255):
         """Does all the set up for the look and position of the TextBox 
         on the screen. Message is set separately. Idea: Create one textbox for the game, and
         reuse it as many times as needed by resetting the text and then calling Show()."""
@@ -23,6 +23,7 @@ class TextBox:
         self.textMargin = 10
         self.lineWidth = size[0]-self.textMargin*2
         self.portrait = None #this will contain an image if chosen to
+        self.opacity = opacity
         
     def SplitMessage( self, message_text ):
         """Does the word-wrap logic for the message to be displayed"""
@@ -104,7 +105,7 @@ class TextBox:
         with shown"""
         # Textbox background
         self.tempSurface.fill(self.bgcolor)
-        #self.textSurface.set_alpha(200)
+        self.tempSurface.set_alpha(self.opacity)
         
         # Textbox Border
         pygame.draw.rect(self.tempSurface, self.borderColor, self.borderRect, 1 )

@@ -31,7 +31,7 @@ msg = 'Hello World'
 background_color = pygame.Color( 0, 0, 0)
 
 #Testing TextBoxes
-textbox = overlay.TextBox(windowSurfaceObject, fontObj, settings.TEXTBOX_COLOR, settings.TEXTBOX_TEXT_COLOR, settings.TEXTBOX_BORDER_COLOR, settings.TEXTBOX_POSITION, settings.TEXTBOX_SIZE)
+textbox = overlay.TextBox(windowSurfaceObject, fontObj, settings.TEXTBOX_COLOR, settings.TEXTBOX_TEXT_COLOR, settings.TEXTBOX_BORDER_COLOR, settings.TEXTBOX_POSITION, settings.TEXTBOX_SIZE, 220)
 textbox.NewDialog("blane.png", "The day has come to defeat that heinous imposter!")
 
 map = Map()
