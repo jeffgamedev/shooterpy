@@ -30,6 +30,11 @@ class TextBox:
         lineList = []   # lists of lines to be returned and rendered
         temp = ""       # temp holding place for lines
         
+        temp_line_width = self.lineWidth
+        
+        if (self.portrait is not None):
+            temp_line_width -= self.portrait.get_width()
+        
         # Word-wrap
         while len(message_text) > 0:
             ch = message_text[0]
@@ -44,7 +49,7 @@ class TextBox:
             temp += ch
             
             #if we've reached the max size of a line
-            if self.font.size(temp)[0] > self.lineWidth:
+            if self.font.size(temp)[0] > temp_line_width:
                 ch = temp[-1] 
                 
                 # go backwards until we find a space to break the line correctly
