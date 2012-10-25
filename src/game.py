@@ -26,28 +26,32 @@ windowSurfaceObject = pygame.display.set_mode((settings.SCREEN_WIDTH, settings.S
 
 pygame.display.set_caption('Shooter 1, II')
 fontObj = pygame.font.Font('freesansbold.ttf', 22)
-msg = 'Hello World'
-
 background_color = pygame.Color( 0, 0, 0)
 
 #Testing TextBoxes
+TextBox = overlay.TextBoxSystem(windowSurfaceObject)
 textbox = overlay.TextBox(windowSurfaceObject, fontObj, settings.TEXTBOX_COLOR, settings.TEXTBOX_TEXT_COLOR, settings.TEXTBOX_BORDER_COLOR, settings.TEXTBOX_POSITION, settings.TEXTBOX_SIZE, 220)
 textbox.NewDialog("blane.png", "The day has come to defeat that heinous imposter!")
 
 map = Map()
 
-map.loadMap("../maps/firstmap.tmx")
+map.LoadMap("../maps/firstmap.tmx")
 
-
-while True: # primary game loop
+while True: # primary game loop	
+	
 	windowSurfaceObject.fill(background_color)
-	map.render(windowSurfaceObject)
+	map.Render(windowSurfaceObject)
 	textbox.Show()
+	
 	pygame.display.update()
 	fpsClock.tick(30);
 
+	map.Update()
+	
 	# USER INPUT:
 	for event in pygame.event.get():
+		TextBox.getInput(event)
+		#textbox.getInput(event)
 		if event.type == QUIT:
 			pygame.quit()
 			sys.exit()

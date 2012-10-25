@@ -1,3 +1,4 @@
+from tiledtmxloader import helperspygame
 ############################################################
 # File:		entity.py
 # Project:	Shooter 1, II
@@ -18,7 +19,7 @@
 ############################################################
 
 
-class Entity:
+class Entity(helperspygame.SpriteLayer.Sprite):
 	"""Entity class is the base class for all person-like characters in the game"""
 	def __init__(self, entityName, startX, startY):
 		self.mapLocation = (startX, startY)

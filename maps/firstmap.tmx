@@ -13,4 +13,9 @@
    eJzt2DEOgzAQRUGa3P/KlDQETBzjv/KMRIlB+ySDvG0k+3RcAEB9/gPq0yOLHln0yKJHFt//ey2zmDWjFXt8kzCLhHdIMWIWT/coPQ5X+9Wvc2q5T49zV3PR4316ZLnrMer8So9zs+bS+tzVzjMr9OhZuxo9suiRJaXHP78FevQ9t9Lao+mRZeaZ7qh/18o90umRRY8semTRI4seWfTIstr5LgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAC02gER3gQb
   </data>
  </layer>
+ <layer name="obstruction" width="100" height="100" opacity="0.32">
+  <data encoding="base64" compression="zlib">
+   eJzt2EsOwiAUhtGuzP0vy6ETpA+45a+ekzgyLeZ+KYrbBhz1Gngx39W56lFDjyx6ZNEjix5Z9MiiR5aRHs4t8939fOjRt6KH5+m7o7NYNad/69GTMIuEz5CiYhZn9yg9Pir2qyPX6dHWm4se99Mjy16PqvOgHm2r5jK67q+eZ57c48p76fTIkt7jyp6kx/i6M78L9Bhb90n3rqZHllW/E2eeZVr3poYeWfTIokcWPbLokUWPLFX/9wMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABw3htAJDd3
+  </data>
+ </layer>
 </map>
