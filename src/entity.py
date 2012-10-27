@@ -1,4 +1,5 @@
 from tiledtmxloader import helperspygame
+import pygame
 ############################################################
 # File:		entity.py
 # Project:	Shooter 1, II
@@ -18,7 +19,6 @@ from tiledtmxloader import helperspygame
 #	do.
 ############################################################
 
-
 class Entity(helperspygame.SpriteLayer.Sprite):
 	"""Entity class is the base class for all person-like characters in the game"""
 	def __init__(self, entityName, startX, startY):
@@ -26,5 +26,14 @@ class Entity(helperspygame.SpriteLayer.Sprite):
 		self.name = entityName
 		self.layer = 0 # which layer entity is on top of
 		self.visible = True
-
-	
+		self.image = pygame.Surface((25, 45), pygame.SRCALPHA)
+		self.image.fill((255, 0, 0, 200))
+		self.rect = self.image.get_rect()
+		self.size = self.rect.width, self.rect.height
+		self.rect = pygame.Rect(self.mapLocation[0], self.mapLocation[1], self.mapLocation[0]+self.size[0], self.mapLocation[1]+self.size[1])
+		super(Entity, self).__init__(self.image, self.rect)
+		
+	def Update(self):
+		self.mapLocation = self.mapLocation[0] + 12, self.mapLocation[1] + 4
+		self.rect.left = self.mapLocation[0] # pygame.Rect(self.mapLocation[0], self.mapLocation[1], self.mapLocation[0]+self.size[0], self.mapLocation[1]+self.size[1])
+		self.rect.top = self.mapLocation[1]
