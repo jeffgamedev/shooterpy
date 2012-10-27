@@ -14,10 +14,11 @@
 #	http://inventwithpython.com/pygamecheatsheet.png
 ############################################################
 
-import pygame, sys, overlay
+import pygame, overlay
 import settings # for constants, etc
 from pygame.locals import *
 from map import Map
+from input import Input
 
 pygame.init()
 fpsClock = pygame.time.Clock()
@@ -35,7 +36,7 @@ textbox.NewDialog("blane.png", "HEY DIS FONT GOOD?")
 
 map = Map()
 map.LoadMap("../maps/firstmap.tmx")
-map.AddEntity(100, 100)
+map.AddEntity(170, 150)
 
 while True: # primary game loop	
 	
@@ -45,11 +46,6 @@ while True: # primary game loop
 	
 	pygame.display.update()
 	fpsClock.tick(30);
-	map.Update()
-	
-	# USER INPUT:
-	for event in pygame.event.get():
-		TextBox.getInput(event)
-		if event.type == QUIT:
-			pygame.quit()
-			sys.exit()
+	Input.Update()
+	map.Update()	
+	TextBox.GetInput()

@@ -22,6 +22,8 @@ class Map(object):
 	def UpdateEntities(self):
 		for entity in self.entities:
 			entity.Update()
+			entity.CheckObstructions(self.GetObs)
+			entity.Move()
 			
 	def GetTile(self, x, y, layer):
 		if layer >= 0 and layer < len(self.mapData.layers) and x > 0 and y > 0 and x < self.mapData.width and y < self.mapData.height:
