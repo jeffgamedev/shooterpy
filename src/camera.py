@@ -1,14 +1,13 @@
 import settings
-import tiledtmxloader.helperspygame
 
 class Camera(object):
-	def __init__(self):		
+	def __init__(self, renderer):		
 		self.position = 0, 0
 		self.lastPosition = 0, 0
 		self.mode = "follow"
 		self.target = None
-		self.bounds = 0, 0, settings.SCREEN_WIDTH, settings.SCREEN_HEIGHT
-		self.renderer = tiledtmxloader.helperspygame.RendererPygame()
+		self.bounds = 0, 0, settings.SCREEN_WIDTH, settings.SCREEN_HEIGHT		
+		self.renderer = renderer
 		self.renderer.set_camera_position_and_size(self.position[0], self.position[1], settings.SCREEN_WIDTH, settings.SCREEN_HEIGHT, "topleft")
 	
 	def SetBoundaries(self, left, top, width, height):

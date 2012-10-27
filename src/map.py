@@ -7,9 +7,10 @@ from entity import Entity
 class Map(object):
 	def __init__(self):	
 		self.size = 0, 0		
-		self.mapData = None
-		self.camera = Camera()
+		self.mapData = None		
 		self.resources = tiledtmxloader.helperspygame.ResourceLoaderPygame()
+		self.renderer = tiledtmxloader.helperspygame.RendererPygame()
+		self.camera = Camera(self.renderer)
 		self.spriteLayers = None		
 		self.obstructions = []
 		self.entities = []
