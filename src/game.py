@@ -39,11 +39,15 @@ map = Map()
 map.LoadMap("firstmap.tmx")
 map.AddEntity(170, 150)
 
+pygame.mixer.music.load("../music/igelkott.mod")
+pygame.mixer.music.play(1)
+
+
 while True: # primary game loop	
 	
-	windowSurfaceObject.fill(background_color)
+	#windowSurfaceObject.fill(background_color)
 	map.Render(windowSurfaceObject)
-	TextBox.Display()
+	#TextBox.Display()
 	
 	pygame.display.update()
 	fpsClock.tick(30);

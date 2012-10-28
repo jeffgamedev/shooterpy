@@ -128,4 +128,4 @@ class Entity(helperspygame.SpriteLayer.Sprite):
 	def Move(self):
 		self.mapLocation = self.mapLocation[0] + self.velocityX, self.mapLocation[1] + self.velocityY
 		self.rect.left = self.mapLocation[0]
-		self.rect.top = self.mapLocation[1] - self.frameSize[1]/2
+		self.rect.top = self.mapLocation[1] - self.size[1]
