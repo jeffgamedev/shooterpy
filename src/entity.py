@@ -34,7 +34,7 @@ class Entity(helperspygame.SpriteLayer.Sprite):
 		self.mapLocation = (startX, startY)
 		self.name = entityName
 		self.layer = 0
-		self.size = 16, 16
+		self.size = 32, 32
 		self.frame = 0
 		self.velocityX = 0
 		self.velocityY = 0
@@ -42,10 +42,10 @@ class Entity(helperspygame.SpriteLayer.Sprite):
 		self.acceleration = 0.5, 0.5
 		self.maxVelocity = 5, 5
 		self.currentAnimation = walkDown
-		self.frameSize = frameSize
+		self.frameSize = frameSize[0], frameSize[1]
 		self.framesPerRow = 5
-		self.rect = pygame.Rect(self.mapLocation[0], self.mapLocation[1], self.mapLocation[0] + self.frameSize[0], self.mapLocation[1] + self.frameSize[1])
-		self.frameRect = pygame.Rect(0, 0, self.frameSize[0], self.frameSize[1])
+		self.rect = pygame.Rect(self.mapLocation[0], self.mapLocation[1], self.mapLocation[0] + self.frameSize[0]*2, self.mapLocation[1] + self.frameSize[1]*2)
+		self.frameRect = pygame.Rect(0, 0, self.frameSize[0]*2, self.frameSize[1]*2)
 		self.SetupImage(spriteFileName)
 		super(Entity, self).__init__(self.image, self.rect, self.frameRect)
 		
@@ -56,6 +56,9 @@ class Entity(helperspygame.SpriteLayer.Sprite):
 			self.image.fill((255, 0, 0, 200))
 		else:
 			self.image = pygame.image.load(Entity.Path + spriteFileName)
+			x = self.image.get_width() #added 
+			y = self.image.get_height() #added
+			self.image = pygame.transform.scale(self.image, (x*2, y*2)) #added
 		
 	def Update(self):
 		if Input.keyboard["up"]:
@@ -123,8 +126,9 @@ class Entity(helperspygame.SpriteLayer.Sprite):
 			frame = self.currentAnimation[int(frame)]
 			frameX = int(frame)%self.framesPerRow
 			frameY = int(int(frame)/self.framesPerRow)
-			self.frameRect.left = frameX * self.frameSize[0]
-			self.frameRect.top = frameY * self.frameSize[1]
+			self.frameRect.left = frameX * self.frameSize[0]*2 # added *2
+			self.frameRect.top = frameY * self.frameSize[1]*2 # added *2
+			
 	
 	def Move(self):
 		self.mapLocation = self.mapLocation[0] + self.velocityX, self.mapLocation[1] + self.velocityY
