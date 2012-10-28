@@ -26,23 +26,24 @@ fpsClock = pygame.time.Clock()
 windowSurfaceObject = pygame.display.set_mode((settings.SCREEN_WIDTH, settings.SCREEN_HEIGHT))
 
 pygame.display.set_caption('Shooter 1, II')
-fontObj = pygame.font.Font('freesansbold.ttf', 44)
+fontObj = pygame.font.Font('freesansbold.ttf', 22)
 background_color = pygame.Color( 0, 0, 0)
 
 #Testing TextBoxes
 TextBox = overlay.TextBoxSystem(windowSurfaceObject)
 textbox = overlay.TextBox(windowSurfaceObject, fontObj, settings.TEXTBOX_COLOR, settings.TEXTBOX_TEXT_COLOR, settings.TEXTBOX_BORDER_COLOR, settings.TEXTBOX_POSITION, settings.TEXTBOX_SIZE, 220)
 textbox.NewDialog("blane.png", "HEY DIS FONT GOOD?")
+#TextBox.New("blane.png"
 
 map = Map()
-map.LoadMap("../maps/firstmap.tmx")
+map.LoadMap("firstmap.tmx")
 map.AddEntity(170, 150)
 
 while True: # primary game loop	
 	
 	windowSurfaceObject.fill(background_color)
 	map.Render(windowSurfaceObject)
-	textbox.Show()
+	TextBox.Display()
 	
 	pygame.display.update()
 	fpsClock.tick(30);

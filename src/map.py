@@ -5,6 +5,7 @@ from camera import Camera
 from entity import Entity
 
 class Map(object):
+	Path = "../maps/"
 	def __init__(self):	
 		self.size = 0, 0		
 		self.mapData = None		
@@ -31,7 +32,7 @@ class Map(object):
 		return -1
 		
 	def AddEntity(self, x, y, layer=0):
-		entity = Entity("entity", x, y)
+		entity = Entity("entity", x, y, "blanea.png")
 		self.spriteLayers[layer].add_sprite(entity)
 		self.camera.SetTarget(entity)
 		self.entities.append(entity)
@@ -43,7 +44,7 @@ class Map(object):
 			return 1 # return 1 for "obstructed" on outside zones
 		
 	def LoadMap(self, name):
-		self.mapData = tiledtmxloader.tmxreader.TileMapParser().parse_decode(name)
+		self.mapData = tiledtmxloader.tmxreader.TileMapParser().parse_decode(Map.Path + name)
 		self.resources.load(self.mapData)
 		self.spriteLayers = tiledtmxloader.helperspygame.get_layers_from_map(self.resources)
 		self.camera.SetBoundaries(0, 0, (self.mapData.width * self.mapData.tilewidth)-(settings.SCREEN_WIDTH), (self.mapData.height * self.mapData.tileheight)-(settings.SCREEN_HEIGHT))
