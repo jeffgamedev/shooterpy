@@ -40,7 +40,7 @@ class Entity(helperspygame.SpriteLayer.Sprite):
 		self.velocityY = 0
 		self.visible = True
 		self.acceleration = 0.5, 0.5
-		self.maxVelocity = 5, 5
+		self.maxVelocity = 8, 8
 		self.currentAnimation = walkDown
 		self.frameSize = frameSize[0], frameSize[1]
 		self.framesPerRow = 5
