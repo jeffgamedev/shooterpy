@@ -30,10 +30,8 @@ fontObj = pygame.font.Font('freesansbold.ttf', 22)
 background_color = pygame.Color( 0, 0, 0)
 
 #Testing TextBoxes
-TextBox = overlay.TextBoxSystem(windowSurfaceObject)
-textbox = overlay.TextBox(windowSurfaceObject, fontObj, settings.TEXTBOX_COLOR, settings.TEXTBOX_TEXT_COLOR, settings.TEXTBOX_BORDER_COLOR, settings.TEXTBOX_POSITION, settings.TEXTBOX_SIZE, 220)
-textbox.NewDialog("blane.png", "HEY DIS FONT GOOD?")
-#TextBox.New("blane.png"
+TextBoxSystem = overlay.TextBoxSystem(windowSurfaceObject)
+TextBoxSystem.New("blane.png", "Let's rock out to Igelkott!")
 
 map = Map()
 map.LoadMap("firstmap.tmx")
@@ -47,10 +45,11 @@ while True: # primary game loop
 	
 	#windowSurfaceObject.fill(background_color)
 	map.Render(windowSurfaceObject)
-	#TextBox.Display()
+	TextBoxSystem.Display()
 	
 	pygame.display.update()
 	fpsClock.tick(30);
-	Input.Update()
-	map.Update()	
-	TextBox.GetInput()
+	
+	Input.Update(TextBoxSystem)
+	
+	map.Update()

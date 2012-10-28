@@ -20,7 +20,7 @@ class Input:
 	keyboard["left"] = 0
 	keyboard["right"] = 0
 	@staticmethod
-	def Update():
+	def Update(textBoxSystemInstance):
 		for event in pygame.event.get():
 			if event.type == QUIT:
 				pygame.quit()
@@ -31,7 +31,17 @@ class Input:
 			elif event.type == KEYDOWN:
 				if event.key in Input.keyboard:
 					Input.keyboard[event.key] = 1
-		Input.StandardInput()
+					
+		if textBoxSystemInstance.focus == True:
+			Input.TextBoxInput(textBoxSystemInstance)
+		else:
+			Input.StandardInput()
+
+	@staticmethod
+	def TextBoxInput(textBoxSystemInstance):
+		if Input.keyboard[K_RETURN]:
+			textBoxSystemInstance.focus = False
+		
 	@staticmethod
 	def StandardInput():
 		if Input.keyboard[K_RIGHT] or Input.keyboard[K_d]:
