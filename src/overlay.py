@@ -45,7 +45,6 @@ class TextBox:
             if ch == '\n':
                 lineList += [temp]
                 temp = ""
-                ch = ""
                 continue
             
             temp += ch
