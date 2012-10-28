@@ -1,7 +1,3 @@
-from tiledtmxloader import helperspygame
-from input import Input
-import settings
-import pygame
 ############################################################
 # File:		entity.py
 # Project:	Shooter 1, II
@@ -20,6 +16,11 @@ import pygame
 #	we should look into how practical that will be to
 #	do.
 ############################################################
+
+from tiledtmxloader import helperspygame
+from input import Input
+import settings
+import pygame
 
 walkDown = [0, 1, 2, 1, 0, 3, 4, 3]
 walkUp= [5, 6, 7, 6, 5, 8, 9, 8]
