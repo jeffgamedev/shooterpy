@@ -31,7 +31,7 @@ background_color = pygame.Color( 0, 0, 0)
 
 #Testing TextBoxes
 TextBoxSystem = overlay.TextBoxSystem(windowSurfaceObject)
-TextBoxSystem.New("blane.png", "Let's rock out to Igelkott!")
+TextBoxSystem.New("blane.png", "Let's rock out to Igelkott! \n\nWOOOOOOO!")
 
 map = Map()
 map.LoadMap("firstmap.tmx")

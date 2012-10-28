@@ -42,10 +42,11 @@ class TextBox:
             message_text = message_text[1:]
             
             # TODO: Allow hard returns in message_text contents
-            #            if ch == '\n'.:
-            #                lineList += temp
-            #               temp = ""
-            #                continue
+            if ch == '\n':
+                lineList += [temp]
+                temp = ""
+                ch = ""
+                continue
             
             temp += ch
             
