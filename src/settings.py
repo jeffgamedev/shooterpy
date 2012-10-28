@@ -14,10 +14,6 @@
 # Screen related
 SCREEN_HEIGHT = 600
 SCREEN_WIDTH = 800
-# Starting map for the game
-STARTING_MAP = "start.tmx"
-
-FRICTION = 0.6
 
 # TextBox Settings
 TEXTBOX_X_MARGIN = 10
@@ -29,8 +25,16 @@ TEXTBOX_TEXT_COLOR = (255,255,255)
 TEXTBOX_BORDER_COLOR = (200, 200, 200)
 TEXTBOX_OPACITY = 220
 
+# MAP SETTINGS
+STARTING_MAP = "start.tmx"
 TILE_WIDTH = 32
 TILE_HEIGHT = 32
+
+# Player Control Settings
+FRICTION = 0.6
+
+# Sprite Settings
+SPRITE_SCALE_FACTOR = 2
 
 def Clamp(num, minNum, maxNum):
 	return max(minNum, min(num, maxNum))

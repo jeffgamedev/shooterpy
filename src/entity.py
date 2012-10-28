@@ -30,23 +30,25 @@ walkRight= [15, 16, 17, 16, 15, 18, 19, 18]
 class Entity(helperspygame.SpriteLayer.Sprite):
 	"""Entity class is the base class for all person-like characters in the game"""
 	Path = "../gfx/sprites/"
-	def __init__(self, entityName, startX, startY, spriteFileName = None, frameSize = (17, 31)):
+	def __init__(self, entityName, startX, startY, spriteFileName = None, frameSize = (17, 31), scaleFactor = settings.SPRITE_SCALE_FACTOR):
 		self.mapLocation = (startX, startY)
 		self.name = entityName
 		self.layer = 0
-		self.size = 32, 32
+		self.size = 16 * scaleFactor, 16 * scaleFactor
 		self.frame = 0
 		self.velocityX = 0
 		self.velocityY = 0
 		self.visible = True
 		self.acceleration = 0.5, 0.5
-		self.maxVelocity = 8, 8
+		self.maxVelocity = 5, 5
 		self.currentAnimation = walkDown
 		self.frameSize = frameSize[0], frameSize[1]
 		self.framesPerRow = 5
-		self.rect = pygame.Rect(self.mapLocation[0], self.mapLocation[1], self.mapLocation[0] + self.frameSize[0]*2, self.mapLocation[1] + self.frameSize[1]*2)
-		self.frameRect = pygame.Rect(0, 0, self.frameSize[0]*2, self.frameSize[1]*2)
+		self.rect = pygame.Rect(self.mapLocation[0], self.mapLocation[1], self.mapLocation[0] + self.frameSize[0]*scaleFactor, self.mapLocation[1] + self.frameSize[1]*scaleFactor)
+		self.frameRect = pygame.Rect(0, 0, self.frameSize[0]*scaleFactor, self.frameSize[1]*scaleFactor)
+		self.scaleFactor = scaleFactor
 		self.SetupImage(spriteFileName)
+
 		super(Entity, self).__init__(self.image, self.rect, self.frameRect)
 		
 	def SetupImage(self, spriteFileName):
@@ -56,9 +58,9 @@ class Entity(helperspygame.SpriteLayer.Sprite):
 			self.image.fill((255, 0, 0, 200))
 		else:
 			self.image = pygame.image.load(Entity.Path + spriteFileName)
-			x = self.image.get_width() #added 
-			y = self.image.get_height() #added
-			self.image = pygame.transform.scale(self.image, (x*2, y*2)) #added
+			x = self.image.get_width()
+			y = self.image.get_height()
+			self.image = pygame.transform.scale(self.image, (x*self.scaleFactor, y*self.scaleFactor))
 		
 	def Update(self):
 		if Input.keyboard["up"]:
@@ -126,8 +128,8 @@ class Entity(helperspygame.SpriteLayer.Sprite):
 			frame = self.currentAnimation[int(frame)]
 			frameX = int(frame)%self.framesPerRow
 			frameY = int(int(frame)/self.framesPerRow)
-			self.frameRect.left = frameX * self.frameSize[0]*2 # added *2
-			self.frameRect.top = frameY * self.frameSize[1]*2 # added *2
+			self.frameRect.left = frameX * self.frameSize[0]*self.scaleFactor
+			self.frameRect.top = frameY * self.frameSize[1]*self.scaleFactor
 			
 	
 	def Move(self):
