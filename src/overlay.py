@@ -121,27 +121,28 @@ class TextBox:
         self.destinationSurface.blit(self.tempSurface, self.rect)
         
 class TextBoxSystem:
-	""" Handles textbox functionality and user interaction for the main game loop"""
-	def __init__(self, windowSurfaceObject):
-		self.fontObj = pygame.font.Font('freesansbold.ttf', 22)
-		self.textbox = TextBox(windowSurfaceObject, self.fontObj, settings.TEXTBOX_COLOR, settings.TEXTBOX_TEXT_COLOR, settings.TEXTBOX_BORDER_COLOR, settings.TEXTBOX_POSITION, settings.TEXTBOX_SIZE, settings.TEXTBOX_OPACITY)
-		self.focus = False # True means that the textbox is being shown and await enter to remove
+    """Handles textbox functionality and user interaction for the main game loop"""
+    def __init__(self, windowSurfaceObject):
+        self.fontObj = pygame.font.Font('freesansbold.ttf', 22)
+        self.textbox = TextBox(windowSurfaceObject, self.fontObj, settings.TEXTBOX_COLOR, settings.TEXTBOX_TEXT_COLOR, settings.TEXTBOX_BORDER_COLOR, settings.TEXTBOX_POSITION, settings.TEXTBOX_SIZE, settings.TEXTBOX_OPACITY)
+        self.focus = False # True means that the textbox is being shown and await enter to remove
 
-	def Display(self):
-		"""Put this in the main game loop. Will only display if the textbox has focus."""
-		if self.focus:
-			self.textbox.Show()
+    def Display(self):
+        """Put this in the main game loop. Will only display if the textbox has focus."""
+        if self.focus:
+            self.textbox.Show()
 
-	def GetInput(self):
-		if Input.keyboard[pygame.K_RETURN]:
-			self.focus = False
-			
-	def New(self, portrait, message):
-		"""Creates a new textbox, and set focus to true"""
-		if self.focus != True:
-			self.textbox.NewDialog(portrait, message)
-			self.focus = True
-		else:
-			print "Bug: Cannot create a new textbox while another one is currently being shown"
-			print "I am creating an event Queue system to handle this."
+    def GetInput(self):
+        """DEPRICATED: Works for pygame in general. But functionality has been replaced in the input.py file"""
+        if Input.keyboard[pygame.K_RETURN]:
+            self.focus = False
+
+    def New(self, portrait, message):
+        """Creates a new textbox, and set focus to true"""
+        if self.focus != True:
+            self.textbox.NewDialog(portrait, message)
+            self.focus = True
+        else:
+            print "Bug: Cannot create a new textbox while another one is currently being shown"
+            print "I am creating an event Queue system to handle this."
         
