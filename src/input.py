@@ -19,8 +19,11 @@ class Input:
 	keyboard["down"] = 0
 	keyboard["left"] = 0
 	keyboard["right"] = 0
+	
+	interruptWait = False
+	
 	@staticmethod
-	def Update(textBoxSystemInstance):
+	def Update(interruptEventSystemInstance):
 		for event in pygame.event.get():
 			if event.type == QUIT:
 				pygame.quit()
@@ -32,15 +35,19 @@ class Input:
 				if event.key in Input.keyboard:
 					Input.keyboard[event.key] = 1
 					
-		if textBoxSystemInstance.focus == True:
-			Input.TextBoxInput(textBoxSystemInstance)
+		if interruptEventSystemInstance.HasActiveEvent():
+			Input.TextBoxInput(interruptEventSystemInstance)
 		else:
 			Input.StandardInput()
 
 	@staticmethod
 	def TextBoxInput(textBoxSystemInstance):
-		if Input.keyboard[K_RETURN]:
-			textBoxSystemInstance.focus = False
+		
+		if Input.keyboard[K_RETURN] and Input.interruptWait == False:
+			textBoxSystemInstance.Dismiss()
+			Input.interruptWait = True
+		elif not Input.keyboard[K_RETURN] and Input.interruptWait == True:
+			Input.interruptWait = False
 		
 	@staticmethod
 	def StandardInput():

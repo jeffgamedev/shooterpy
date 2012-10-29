@@ -3,11 +3,59 @@
 # created 10/20/12 
 ###################################################################
 
-import pygame, settings
+import pygame, settings, Queue
 from input import Input
 
-class TextBox:
-    def __init__(self, destinationSurface, font, bgcolor, textcolor, borderColor, position, size, opacity=255):
+class InterruptEvent:
+    """Interrupt Events are events that occur in the UI such as a text box that must be dismissed before 
+    other game logic can continue"""
+    def __init___ (self):
+        pass
+    def Show(self):
+        print "Show() not implemented."
+    
+class NotificationBox(InterruptEvent):
+    """Item Procured, etc"""
+    def __init__(self, destinationSurface, font, message, position=settings.NOTIFICATION_BOX_POSITION, size=settings.NOTIFICATION_BOX_SIZE, bgcolor=settings.TEXTBOX_COLOR, textcolor=settings.TEXTBOX_TEXT_COLOR, borderColor=settings.TEXTBOX_BORDER_COLOR, opacity=settings.TEXTBOX_OPACITY):
+        """Setup for Notification Box """
+        self.destinationSurface = destinationSurface # eg. the screen
+        self.tempSurface = pygame.Surface(size) #holding place to be displayed
+        self.font = font # pygame font object
+        self.bgcolor = bgcolor # should be in (r, g, b) format
+        self.borderColor = borderColor # should be in (r, g, b) format
+        self.rect = pygame.Rect ( position, size )
+        self.borderRect = pygame.Rect((2,2), (size[0]-5, size[1]-5))
+        self.textcolor = textcolor
+        self.textMargin = settings.NOTIFICATION_BOX_TEXT_MARGIN
+        self.opacity = opacity
+        self.NewNotification(message)
+        
+    def NewNotification(self, message):
+        self.DrawBoxToTempSurface()
+        self.DrawTextToTempSurface(message)
+    
+    def DrawBoxToTempSurface(self):
+        """Draws the TextBox background and border to a temporary Surface to be displayed
+        with shown"""
+        # Notification background
+        self.tempSurface.fill(self.bgcolor)
+        self.tempSurface.set_alpha(self.opacity)
+        
+        # Notification Border
+        pygame.draw.rect(self.tempSurface, self.borderColor, self.borderRect, 2 )
+        
+    # Sets the text and draws it to a surface to be used
+    def DrawTextToTempSurface(self, message_text):
+        """Draws only the words of the textbox to the temporary surface"""
+        label = self.font.render(message_text, 1, self.textcolor)
+        self.tempSurface.blit(label, (self.textMargin, self.textMargin))
+    
+    
+    def Show(self):
+        self.destinationSurface.blit(self.tempSurface, self.rect)
+    
+class TextBox(InterruptEvent):
+    def __init__(self, destinationSurface, font, portrait, message, position=settings.TEXTBOX_POSITION, size=settings.TEXTBOX_SIZE, bgcolor=settings.TEXTBOX_COLOR, textcolor=settings.TEXTBOX_TEXT_COLOR, borderColor=settings.TEXTBOX_BORDER_COLOR, opacity=settings.TEXTBOX_OPACITY):
         """Does all the set up for the look and position of the TextBox 
         on the screen. Message is set separately. Idea: Create one textbox for the game, and
         reuse it as many times as needed by resetting the text and then calling Show()."""
@@ -25,6 +73,7 @@ class TextBox:
         self.lineWidth = size[0]-self.textMargin*2
         self.portrait = None #this will contain an image if chosen to
         self.opacity = opacity
+        self.NewDialog(portrait, message)
         
     def SplitMessage( self, message_text ):
         """Does the word-wrap logic for the message to be displayed"""
@@ -43,7 +92,7 @@ class TextBox:
             
             # TODO: Allow hard returns in message_text contents
             if ch == '\n':
-                lineList += [temp]
+                lineList += [temp.strip()]
                 temp = ""
                 continue
             
@@ -86,6 +135,7 @@ class TextBox:
         """Dialog in the sense of a character speaking. Accompanied by a portrait image."""
         self.SetPortrait(image_filename)
         self.SetText(message_text)
+        return self
         
     def DrawPortraitToTempSurface(self):
         portloc = (self.textMargin,self.textMargin/2)
@@ -119,30 +169,55 @@ class TextBox:
     def Show(self):
         """Displays the textbox that has been created"""
         self.destinationSurface.blit(self.tempSurface, self.rect)
-        
-class TextBoxSystem:
-    """Handles textbox functionality and user interaction for the main game loop"""
+
+class TextBoxEvent(InterruptEvent):
+    def __init__(self, portrait, message):
+        pass
+
+class InterruptEventSystem:
+    """Handles interrupt Event functionality and user interaction for the main game loop"""
     def __init__(self, windowSurfaceObject):
-        self.fontObj = pygame.font.Font('freesansbold.ttf', 22)
-        self.textbox = TextBox(windowSurfaceObject, self.fontObj, settings.TEXTBOX_COLOR, settings.TEXTBOX_TEXT_COLOR, settings.TEXTBOX_BORDER_COLOR, settings.TEXTBOX_POSITION, settings.TEXTBOX_SIZE, settings.TEXTBOX_OPACITY)
-        self.focus = False # True means that the textbox is being shown and await enter to remove
+        self.windowSurfaceObject = windowSurfaceObject
+        
+        self.textboxFont = pygame.font.Font('freesansbold.ttf', settings.TEXTBOX_FONT_SIZE)
+        self.notificationFont = pygame.font.Font('freesansbold.ttf', settings.NOTIFICATION_FONT_SIZE)
+
+        self.currentEvent = None
+        
+        self.eventQueue = Queue.Queue()
 
     def Display(self):
         """Put this in the main game loop. Will only display if the textbox has focus."""
-        if self.focus:
-            self.textbox.Show()
+        if self.HasActiveEvent():
+            self.currentEvent.Show()
 
+    def Dismiss(self):
+        """Dismisses textbox by setting it's focus to false"""
+        self.currentEvent = None
+    
+    def HasActiveEvent(self):
+        return self.currentEvent <> None
+    
+    def Update(self):
+        if self.currentEvent == None and not self.eventQueue.empty():
+            self.currentEvent = self.eventQueue.get()
+            print "DEBUG: getting from queue"
+            
     def GetInput(self):
         """DEPRICATED: Works for pygame in general. But functionality has been replaced in the input.py file"""
         if Input.keyboard[pygame.K_RETURN]:
-            self.focus = False
+            self.currentEvent = None
 
-    def New(self, portrait, message):
-        """Creates a new textbox, and set focus to true"""
-        if self.focus != True:
-            self.textbox.NewDialog(portrait, message)
-            self.focus = True
-        else:
-            print "Bug: Cannot create a new textbox while another one is currently being shown"
-            print "I am creating an event Queue system to handle this."
+    def AddTextBox(self, portrait, message):
+        """Creates a new textbox and adds it to the queue"""
+        textbox = TextBox(self.windowSurfaceObject, self.textboxFont, portrait, message)
+        self.eventQueue.put(textbox )
+        print "DEBUG: adding textbox to queue"
+        
+    def AddNotificationBox(self, message):
+        notification = NotificationBox(self.windowSurfaceObject, self.notificationFont, message)
+        self.eventQueue.put(notification)
+        print "DEBUG: adding notification box to queue"
+        
+
         

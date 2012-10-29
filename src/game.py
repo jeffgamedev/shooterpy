@@ -30,9 +30,13 @@ fontObj = pygame.font.Font('freesansbold.ttf', 22)
 background_color = pygame.Color( 0, 0, 0)
 
 #Testing TextBoxes
-TextBoxSystem = overlay.TextBoxSystem(windowSurfaceObject)
-TextBoxSystem.New("blane.png", "Let's rock out to Igelkott! \n\nWOOOOOOO!")
-
+interruptEvents = overlay.InterruptEventSystem(windowSurfaceObject)
+interruptEvents.AddTextBox("blane.png", "Good day, sir Frog!")
+interruptEvents.AddTextBox("blane.png", "I have implemented the InterruptEvent System that allows you to have several textboxes and similar objects waiting in a queue until they are dismissed.\n\nThere are now even...")
+interruptEvents.AddNotificationBox("Notification Boxes!")
+interruptEvents.AddTextBox("blane.png", "But in the meantime, there's still a bit more I need to update to make them more dynamic.")
+interruptEvents.AddTextBox("blane.png", "SHOOTER 1, II!!!!!!! \n\n WOOOOOOOOOOOOOOOOOOOOOO!!!!")
+interruptEvents.AddNotificationBox("Pistol Procured!")
 map = Map()
 map.LoadMap("firstmap.tmx")
 map.AddEntity(170, 150)
@@ -45,11 +49,12 @@ while True: # primary game loop
 	
 	#windowSurfaceObject.fill(background_color)
 	map.Render(windowSurfaceObject)
-	TextBoxSystem.Display()
+	interruptEvents.Display()
 	
+	Input.Update(interruptEvents)
 	pygame.display.update()
 	fpsClock.tick(30);
 	
-	Input.Update(TextBoxSystem)
-	
+	interruptEvents.Update()
+
 	map.Update()
