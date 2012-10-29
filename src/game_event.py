@@ -1,3 +1,8 @@
+# # #
+### DO NOT USE! Idea replaced in overlay.py by InterruptEventSystem.
+### This might be used later for non-interrupt events.
+# # #
+
 import Queue
 
 class GameEventTypes:
