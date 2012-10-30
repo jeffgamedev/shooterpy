@@ -39,7 +39,13 @@ interruptEvents.AddTextBox("blane.png", "SHOOTER 1, II!!!!!!! \n\n WOOOOOOOOOOOO
 interruptEvents.AddNotificationBox("Pistol Procured!")
 map = Map()
 map.LoadMap("firstmap.tmx")
-map.AddEntity(170, 150)
+
+Blane = map.AddEntity(170, 150)
+Blane.SetControl(True)
+map.camera.SetTarget(Blane)
+#map.AddEntity(190, 160)
+#map.AddEntity(210, 170)
+map.AddEntity(240, 180)
 
 pygame.mixer.music.load("../music/igelkott.mod")
 pygame.mixer.music.play(1)

@@ -19,6 +19,7 @@
 
 from tiledtmxloader import helperspygame
 from input import Input
+from random import randint
 import settings
 import pygame
 
@@ -34,22 +35,28 @@ class Entity(helperspygame.SpriteLayer.Sprite):
 		self.mapLocation = (startX, startY)
 		self.name = entityName
 		self.layer = 0
-		self.size = 16 * scaleFactor, 16 * scaleFactor
+		self.size = 16 * scaleFactor, 16 * scaleFactor		
 		self.frame = 0
-		self.velocityX = 0
-		self.velocityY = 0
+		self.velocityX = 1
+		self.velocityY = 1
 		self.visible = True
+		self.direction = 1
 		self.acceleration = 0.5, 0.5
 		self.maxVelocity = 5, 5
 		self.currentAnimation = walkDown
 		self.frameSize = frameSize[0], frameSize[1]
 		self.framesPerRow = 5
 		self.rect = pygame.Rect(self.mapLocation[0], self.mapLocation[1], self.mapLocation[0] + self.frameSize[0]*scaleFactor, self.mapLocation[1] + self.frameSize[1]*scaleFactor)
+		self.touchRect = pygame.Rect(self.rect.left, self.rect.top, self.rect.left+self.size[0], self.rect.top+self.size[1])
 		self.frameRect = pygame.Rect(0, 0, self.frameSize[0]*scaleFactor, self.frameSize[1]*scaleFactor)
 		self.scaleFactor = scaleFactor
 		self.SetupImage(spriteFileName)
-
+		self.pickupRange = 10
+		self.playerControlled = False
 		super(Entity, self).__init__(self.image, self.rect, self.frameRect)
+		
+	def SetControl(self, bool):
+		self.playerControlled = bool
 		
 	def SetupImage(self, spriteFileName):
 		if spriteFileName is None:
@@ -63,29 +70,75 @@ class Entity(helperspygame.SpriteLayer.Sprite):
 			self.image = pygame.transform.scale(self.image, (x*self.scaleFactor, y*self.scaleFactor))
 		
 	def Update(self):
-		if Input.keyboard["up"]:
-			self.velocityY = settings.Clamp(self.velocityY - self.acceleration[1], -self.maxVelocity[1], self.maxVelocity[1])
-			self.currentAnimation = walkUp
-		elif Input.keyboard["down"]:
-			self.velocityY = settings.Clamp(self.velocityY + self.acceleration[1], -self.maxVelocity[1], self.maxVelocity[1])
-			self.currentAnimation = walkDown
-		elif self.velocityY != 0:
-			if self.velocityY < self.acceleration[1] and self.velocityY > -self.acceleration[1]:
-				self.velocityY = 0
-			else:
-				self.velocityY = self.velocityY * settings.FRICTION
-		if Input.keyboard["left"]:
-			self.velocityX = settings.Clamp(self.velocityX - self.acceleration[0], -self.maxVelocity[0], self.maxVelocity[0])
-			self.currentAnimation = walkLeft
-		elif Input.keyboard["right"]:
-			self.velocityX = settings.Clamp(self.velocityX + self.acceleration[0], -self.maxVelocity[0], self.maxVelocity[0])
-			self.currentAnimation = walkRight
-		elif self.velocityX != 0:
-			if self.velocityX < self.acceleration[0] and self.velocityX > -self.acceleration[0]:
-				self.velocityX = 0
-			else:
-				self.velocityX = self.velocityX * settings.FRICTION			
+		if self.playerControlled:
+			self.PlayerControl()
+		else:
+			self.RandomAI()
 		self.Animate()
+		#print self.get_draw_cond(), self.rect.bottom
+				
+	def WalkUp(self):
+		self.velocityY = settings.Clamp(self.velocityY - self.acceleration[1], -self.maxVelocity[1], self.maxVelocity[1])
+		self.currentAnimation = walkUp
+		self.direction = 0
+	def WalkDown(self):
+		self.velocityY = settings.Clamp(self.velocityY + self.acceleration[1], -self.maxVelocity[1], self.maxVelocity[1])
+		self.currentAnimation = walkDown
+		self.direction = 1
+	def WalkLeft(self):
+		self.velocityX = settings.Clamp(self.velocityX - self.acceleration[0], -self.maxVelocity[0], self.maxVelocity[0])
+		self.currentAnimation = walkLeft
+		self.direction = 2
+	def WalkRight(self):
+		self.velocityX = settings.Clamp(self.velocityX + self.acceleration[0], -self.maxVelocity[0], self.maxVelocity[0])
+		self.currentAnimation = walkRight
+		self.direction = 3
+		
+	def DeccelerateY(self):
+		if self.velocityY < self.acceleration[1] and self.velocityY > -self.acceleration[1]:
+			self.velocityY = 0
+		else:
+			self.velocityY = self.velocityY * settings.FRICTION
+			
+	def DeccelerateX(self):
+		if self.velocityX < self.acceleration[0] and self.velocityX > -self.acceleration[0]:
+			self.velocityX = 0
+		else:
+			self.velocityX = self.velocityX * settings.FRICTION
+		
+	def RandomAI(self):
+		if randint(0, 20) == 0: # choose new direction
+			self.direction = randint(0, 10)
+		
+		if self.direction == 0:
+			self.WalkUp()
+			#self.DeccelerateX()
+		elif self.direction == 1:
+			self.WalkDown()
+			#self.DeccelerateX()
+		elif self.direction == 2:
+			self.WalkLeft()
+			#self.DeccelerateY()
+		elif self.direction == 3:
+			self.WalkRight()
+			#self.DeccelerateY()
+		else:
+			self.DeccelerateX()
+			self.DeccelerateY()
+		
+	def PlayerControl(self):
+		if Input.keyboard["up"]:
+			self.WalkUp()
+		elif Input.keyboard["down"]:
+			self.WalkDown()
+		elif self.velocityY != 0:
+			self.DeccelerateY()
+		if Input.keyboard["left"]:
+			self.WalkLeft()
+		elif Input.keyboard["right"]:
+			self.WalkRight()
+		elif self.velocityX != 0:
+			self.DeccelerateX()		
 			
 	def CheckObstructions(self, obs):
 		if self.velocityX < 0:
@@ -112,7 +165,20 @@ class Entity(helperspygame.SpriteLayer.Sprite):
 			x2 = (self.mapLocation[0] + self.size[0]) / settings.TILE_WIDTH
 			if obs(int(x1), int(y)) or obs(int(x2), int(y)):
 				self.velocityY = 0
-	
+				
+	def CheckEntities(self, ents):
+		for ent in ents:
+			if ent is not self:
+				pass
+				#if not self.touchRect.colliderect(ent.touchRect):
+					#print "i"
+				#if self.velocityX > 0:
+					#if self.touchRect.left + self.velocityX 
+				#if self.touchRect.colliderect(ent.touchRect):
+				#	if self.velocityX > 0 and ent.touchRect.left > self.touchRect.left:
+				#		self.velocityX = 0
+				#	print "collide"
+			
 	def Animate(self):
 		if self.velocityX != 0 or self.velocityY != 0:
 			if self.frame >= len(self.currentAnimation):
@@ -136,3 +202,7 @@ class Entity(helperspygame.SpriteLayer.Sprite):
 		self.mapLocation = self.mapLocation[0] + self.velocityX, self.mapLocation[1] + self.velocityY
 		self.rect.left = self.mapLocation[0]
 		self.rect.top = self.mapLocation[1] - self.size[1]
+		self.touchRect.left = self.rect.left
+		self.touchRect.top= self.rect.top
+		#self.rangeRectangle.left = self.rect.left-self.pickupRange
+		#self.rangeRectangle.top = self.rect.top-self.pickupRange

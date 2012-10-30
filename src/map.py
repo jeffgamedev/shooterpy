@@ -13,13 +13,18 @@ class Map(object):
 			self.rect = pygame.Rect(x, y, x + width, y + height)
 			self.image = None
 			self.frameRect = None
+			self.size = 10, 10
+			self.touchRect = pygame.Rect(self.rect.left, self.rect.top, self.rect.left+self.size[0], self.rect.top+self.size[1])
 			if spriteFileName is not None:
 				self.frameRect = pygame.Rect(index * 100, 0, (index * 100) + 100, 100)
 				self.image = pygame.image.load(Entity.Path + spriteFileName)
 			else:
-				self.image = pygame.Surface((width, height), pygame.SRCALPHA)				
+				self.image = pygame.Surface((width, height), pygame.SRCALPHA)
 				self.image.fill((255, 0, 0, 200))
 			super(Map.MapObject, self).__init__(self.image, self.rect, self.frameRect)
+		def Update(self):
+			pass
+			#print self.get_draw_cond()
 	
 	def __init__(self):	
 		self.size = 0, 0		
@@ -34,16 +39,17 @@ class Map(object):
 		
 	def Update(self):
 		self.UpdateEntities()
-		self.camera.Update()
+		self.camera.Update()		
 			
 	def UpdateEntities(self):
 		for entity in self.entities:
 			entity.Update()
 			entity.CheckObstructions(self.GetObs)
+			entity.CheckEntities(self.entities)
 			entity.Move()
 			
-		if self.spriteLayers[0] is not None:
-			self.spriteLayers[0].sprites.sort(key=lambda x: x.rect.top, reverse=False)
+		for obj in self.objects:
+			obj.Update()
 			
 	def GetTile(self, x, y, layer):
 		if layer >= 0 and layer < len(self.mapData.layers) and x > 0 and y > 0 and x < self.mapData.width and y < self.mapData.height:
@@ -52,9 +58,9 @@ class Map(object):
 		
 	def AddEntity(self, x, y, layer=0):
 		entity = Entity("entity", x, y, "blanea.png")
-		self.spriteLayers[layer].add_sprite(entity)
-		self.camera.SetTarget(entity)
+		self.spriteLayers[layer].add_sprite(entity)		
 		self.entities.append(entity)
+		return entity
 		
 	def GetObs(self, x, y):
 		if x >= 0 and  y >= 0 and x < self.mapData.width and y < self.mapData.height:
