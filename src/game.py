@@ -47,9 +47,7 @@ map.Update() #fixes the jump at the beginning. would be best to fix the source o
 
 while True: # primary game loop	
 	
-	#windowSurfaceObject.fill(background_color)
-	
-	# Logic Updating
+	##### LOGIC UPDATES #####
 	interruptEvents.Update()
 	
 	# Map Logic does not update while an interrupt event is waiting to be dismissed!
@@ -59,7 +57,7 @@ while True: # primary game loop
 	Input.Update(interruptEvents)
 
 	
-	# Display Updating
+	##### DISPLAY UPDATES #####
 	map.Render(windowSurfaceObject)
 	interruptEvents.Display()	
 	pygame.display.update()
