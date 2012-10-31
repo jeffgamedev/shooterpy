@@ -46,16 +46,26 @@ class Entity(helperspygame.SpriteLayer.Sprite):
 		self.currentAnimation = walkDown
 		self.frameSize = frameSize[0], frameSize[1]
 		self.framesPerRow = 5
-		self.rect = pygame.Rect(self.mapLocation[0], self.mapLocation[1], self.mapLocation[0] + self.frameSize[0]*scaleFactor, self.mapLocation[1] + self.frameSize[1]*scaleFactor)
-		self.touchRect = pygame.Rect(self.rect.left, self.rect.top, self.rect.left+self.size[0], self.rect.top+self.size[1])
+		self.rect = pygame.Rect(self.mapLocation[0], self.mapLocation[1], self.frameSize[0]*scaleFactor, self.frameSize[1]*scaleFactor)
+		
+		self.DebugRectSize()
+		
+		self.touchRect = pygame.Rect(self.rect.left, self.rect.top, self.size[0]*scaleFactor, self.size[1]*scaleFactor)
 		self.frameRect = pygame.Rect(0, 0, self.frameSize[0]*scaleFactor, self.frameSize[1]*scaleFactor)
+		
 		self.scaleFactor = scaleFactor
 		self.SetupImage(spriteFileName)
 		self.pickupRange = 10
 		self.playerControlled = False
+		
 		super(Entity, self).__init__(self.image, self.rect, self.frameRect)
+
+	
+	def DebugRectSize(self):
+		print "{0} {1} ".format(self.rect.right - self.rect.left, self.rect.bottom-self.rect.top)
 		
 	def SetControl(self, bool):
+		
 		self.playerControlled = bool
 		
 	def SetupImage(self, spriteFileName):

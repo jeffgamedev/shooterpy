@@ -56,7 +56,7 @@ class Map(object):
 			return self.mapData.layers[layer].content2D[x][y]
 		return -1
 		
-	def AddEntity(self, x, y, layer=0):
+	def AddEntity(self, x, y, layer=1):
 		entity = Entity("entity", x, y, "blanea.png")
 		self.spriteLayers[layer].add_sprite(entity)		
 		self.entities.append(entity)
