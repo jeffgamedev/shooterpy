@@ -43,17 +43,30 @@ pygame.mixer.music.load("../music/igelkott.mod")
 pygame.mixer.music.play(1)
 
 
+map.Update() #fixes the jump at the beginning. would be best to fix the source of the problem tho.
 
 while True: # primary game loop	
 	
 	#windowSurfaceObject.fill(background_color)
-	map.Render(windowSurfaceObject)
-	interruptEvents.Display()
+	
+	# Logic Updating
+	interruptEvents.Update()
+	
+	# Map Logic does not update while an interrupt event is waiting to be dismissed!
+	if not interruptEvents.HasActiveEvent():
+		map.Update()
 	
 	Input.Update(interruptEvents)
+
+	
+	# Display Updating
+	map.Render(windowSurfaceObject)
+	interruptEvents.Display()	
 	pygame.display.update()
+	
+	#Framerate Regulation
 	fpsClock.tick(30);
 	
-	interruptEvents.Update()
 
-	map.Update()
+
+	
