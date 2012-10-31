@@ -27,11 +27,7 @@ background_color = pygame.Color( 0, 0, 0)
 
 #Testing TextBoxes
 interruptEvents = overlay.InterruptEventSystem(windowSurfaceObject)
-interruptEvents.AddTextBox("blane.png", "Good day, sir Frog!")
-interruptEvents.AddTextBox("blane.png", "I have implemented the InterruptEvent System that allows you to have several textboxes and similar objects waiting in a queue until they are dismissed.\n\nThere are now even...")
-interruptEvents.AddNotificationBox("Notification Boxes!")
-interruptEvents.AddTextBox("blane.png", "But in the meantime, there's still a bit more I need to update to make them more dynamic.")
-interruptEvents.AddTextBox("blane.png", "SHOOTER 1, II!!!!!!! \n\n WOOOOOOOOOOOOOOOOOOOOOO!!!!")
+interruptEvents.AddTextBox("blane.png", "Good day, sir Frog! It appears I have solved the problems with collision detection and entity display! Huzzah! Now we can easily move on to other parts of the game!")
 interruptEvents.AddNotificationBox("Pistol Procured!")
 map = Map()
 map.LoadMap("firstmap.tmx")
@@ -45,6 +41,7 @@ map.AddEntity(240, 180)
 
 pygame.mixer.music.load("../music/igelkott.mod")
 pygame.mixer.music.play(1)
+
 
 
 while True: # primary game loop	
