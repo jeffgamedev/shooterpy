@@ -8,10 +8,6 @@
 #	As much pygame specific code as possible should be
 #	kept in here and out of other files/classes.
 #
-# NOTE:
-# What I've put in here so far is basically going of the python
-#	Cheat Sheet which can be found here:
-#	http://inventwithpython.com/pygamecheatsheet.png
 ############################################################
 
 import pygame, overlay
