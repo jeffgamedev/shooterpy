@@ -27,17 +27,20 @@ class Map(object):
 	def UpdateEntities(self):
 		for entity in self.entities:
 			if entity.touchRect.colliderect(self.renderer._cam_rect): # if entity is on screen
-				if not entity in self.onScreenEntities:
-					self.onScreenEntities.append(entity) #add it to on screen entity list
-				entity.Update()
-				entity.CheckObstructions(self.GetObs)
-				entity.CheckEntityCollision(self.onScreenEntities) # only check collision with on screen entities
-				entity.Move()
+				self.UpdateEntity(entity)
 			elif entity in self.onScreenEntities: # if entity is not on screen and is in on screen entity list
 				self.onScreenEntities.remove(entity) # remove from on screen entity list
 			
 		for obj in self.objects:
 			obj.Update()
+			
+	def UpdateEntity(self, entity):
+		if not entity in self.onScreenEntities:
+			self.onScreenEntities.append(entity) #add it to on screen entity list
+		entity.Update()
+		entity.CheckObstructions(self.GetObs)
+		entity.CheckEntityCollision(self.onScreenEntities) # only check collision with on screen entities
+		entity.Move()
 			
 	def GetTile(self, x, y, layer):
 		if layer >= 0 and layer < len(self.mapData.layers) and x > 0 and y > 0 and x < self.mapData.width and y < self.mapData.height:
