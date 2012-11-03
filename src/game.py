@@ -48,19 +48,13 @@ for x in range(7):
 		
 map.AddEntity(210, 170)
 map.AddEntity(240, 180)
-
 pygame.mixer.music.load("../music/igelkott.mod")
 pygame.mixer.music.play(1)
-
 
 map.Update() #fixes the jump at the beginning. would be best to fix the source of the problem tho.
 
 while True: # primary game loop	
-	
 	##### LOGIC UPDATES #####
-	
-	fps = fontObj.render("42", 1, (255,255,255))	
-	
 	interruptEvents.Update()
 	
 	# Map Logic does not update while an interrupt event is waiting to be dismissed!
@@ -68,17 +62,11 @@ while True: # primary game loop
 		map.Update()
 	
 	Input.Update(interruptEvents)
-
 	
 	##### DISPLAY UPDATES #####	
 	map.Render(windowSurfaceObject)
 	interruptEvents.Display()
-
 	pygame.display.update()
 	
 	#Framerate Regulation
 	fpsClock.tick(30);
-	
-
-
-	
