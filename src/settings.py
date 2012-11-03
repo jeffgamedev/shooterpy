@@ -41,6 +41,8 @@ TILE_HEIGHT = 32
 
 # Player Control Settings
 FRICTION = 0.6
+COLLISION_SLOWDOWN = .8
+PUSH_SPEED = 1
 
 # Sprite Settings
 SPRITE_SCALE_FACTOR = 2

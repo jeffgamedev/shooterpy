@@ -40,6 +40,7 @@ class Entity(helperspygame.SpriteLayer.Sprite):
 		self.velocityX = 1
 		self.velocityY = 1
 		self.visible = True
+		self.collidable = True
 		self.direction = 1
 		self.acceleration = 0.5, 0.5
 		self.maxVelocity = 5, 5
@@ -47,10 +48,9 @@ class Entity(helperspygame.SpriteLayer.Sprite):
 		self.frameSize = frameSize[0], frameSize[1]
 		self.framesPerRow = 5
 		self.rect = pygame.Rect(self.mapLocation[0], self.mapLocation[1], self.frameSize[0]*scaleFactor, self.frameSize[1]*scaleFactor)
-		
 		self.DebugRectSize()
 		
-		self.touchRect = pygame.Rect(self.rect.left, self.rect.top, self.size[0]*scaleFactor, self.size[1]*scaleFactor)
+		self.touchRect = pygame.Rect(self.rect.left, self.rect.top, self.size[0], self.size[1])
 		self.frameRect = pygame.Rect(0, 0, self.frameSize[0]*scaleFactor, self.frameSize[1]*scaleFactor)
 		
 		self.scaleFactor = scaleFactor
@@ -85,7 +85,6 @@ class Entity(helperspygame.SpriteLayer.Sprite):
 		else:
 			self.RandomAI()
 		self.Animate()
-		#print self.get_draw_cond(), self.rect.bottom
 				
 	def WalkUp(self):
 		self.velocityY = settings.Clamp(self.velocityY - self.acceleration[1], -self.maxVelocity[1], self.maxVelocity[1])
@@ -176,18 +175,25 @@ class Entity(helperspygame.SpriteLayer.Sprite):
 			if obs(int(x1), int(y)) or obs(int(x2), int(y)):
 				self.velocityY = 0
 				
-	def CheckEntities(self, ents):
+	def CheckEntityCollision(self, ents):
 		for ent in ents:
-			if ent is not self:
-				pass
-				#if not self.touchRect.colliderect(ent.touchRect):
-					#print "i"
-				#if self.velocityX > 0:
-					#if self.touchRect.left + self.velocityX 
-				#if self.touchRect.colliderect(ent.touchRect):
-				#	if self.velocityX > 0 and ent.touchRect.left > self.touchRect.left:
-				#		self.velocityX = 0
-				#	print "collide"
+			if ent is not self and ent.collidable:
+				if self.touchRect.colliderect(ent.touchRect):
+					self.PushAgainstEntity(ent)
+	
+	def PushAgainstEntity(self, ent):
+		if self.velocityX > 0 and self.touchRect.right <= ent.touchRect.right:
+			self.velocityX = self.velocityX * settings.COLLISION_SLOWDOWN
+			ent.velocityX += settings.PUSH_SPEED
+		elif self.velocityX < 0 and self.touchRect.left >= ent.touchRect.left:
+			self.velocityX = self.velocityX * settings.COLLISION_SLOWDOWN
+			ent.velocityX -= settings.PUSH_SPEED
+		if self.velocityY > 0 and self.touchRect.bottom <= ent.touchRect.bottom:
+			self.velocityY = self.velocityY * settings.COLLISION_SLOWDOWN
+			ent.velocityY += settings.PUSH_SPEED
+		elif self.velocityY < 0 and self.touchRect.top >= ent.touchRect.top:
+			self.velocityY = self.velocityY * settings.COLLISION_SLOWDOWN
+			ent.velocityY -= settings.PUSH_SPEED
 			
 	def Animate(self):
 		if self.velocityX != 0 or self.velocityY != 0:
@@ -214,5 +220,3 @@ class Entity(helperspygame.SpriteLayer.Sprite):
 		self.rect.top = self.mapLocation[1] - self.size[1]
 		self.touchRect.left = self.rect.left
 		self.touchRect.top= self.rect.top
-		#self.rangeRectangle.left = self.rect.left-self.pickupRange
-		#self.rangeRectangle.top = self.rect.top-self.pickupRange

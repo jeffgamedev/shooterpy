@@ -27,16 +27,26 @@ background_color = pygame.Color( 0, 0, 0)
 
 #Testing TextBoxes
 interruptEvents = overlay.InterruptEventSystem(windowSurfaceObject)
-interruptEvents.AddTextBox("blane.png", "Good day, sir Frog! It appears I have solved the problems with collision detection and entity display! Huzzah! Now we can easily move on to other parts of the game!")
-interruptEvents.AddNotificationBox("Pistol Procured!")
+#interruptEvents.AddTextBox("blane.png", "Good day, sir Frog! It appears I have solved the problems with collision detection and entity display! Huzzah! Now we can easily move on to other parts of the game!")
+interruptEvents.AddTextBox("TL_port_blu.bmp", "Sir, it appears the cloning device has gone haywire.")
+
+#interruptEvents.AddNotificationBox("Pistol Procured!")
 map = Map()
 map.LoadMap("firstmap.tmx")
 
 Blane = map.AddEntity(170, 150)
 Blane.SetControl(True)
 map.camera.SetTarget(Blane)
-#map.AddEntity(190, 160)
-#map.AddEntity(210, 170)
+
+for x in range(7):
+	for y in range(6):		
+		map.AddEntity(160+x*50, 120+y*50)
+		
+for x in range(7):
+	for y in range(6):		
+		map.AddEntity(1720+x*50, 720+y*50)
+		
+map.AddEntity(210, 170)
 map.AddEntity(240, 180)
 
 pygame.mixer.music.load("../music/igelkott.mod")
@@ -48,6 +58,9 @@ map.Update() #fixes the jump at the beginning. would be best to fix the source o
 while True: # primary game loop	
 	
 	##### LOGIC UPDATES #####
+	
+	fps = fontObj.render("42", 1, (255,255,255))	
+	
 	interruptEvents.Update()
 	
 	# Map Logic does not update while an interrupt event is waiting to be dismissed!
@@ -57,9 +70,10 @@ while True: # primary game loop
 	Input.Update(interruptEvents)
 
 	
-	##### DISPLAY UPDATES #####
+	##### DISPLAY UPDATES #####	
 	map.Render(windowSurfaceObject)
-	interruptEvents.Display()	
+	interruptEvents.Display()
+
 	pygame.display.update()
 	
 	#Framerate Regulation

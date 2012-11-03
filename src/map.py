@@ -7,24 +7,6 @@ from entity import Entity
 
 class Map(object):
 	Path = "../maps/"
-	class MapObject(tiledtmxloader.helperspygame.SpriteLayer.Sprite):
-		def __init__(self, x, y, width, height, spriteFileName, index):
-			self.mapLocation = x, y
-			self.rect = pygame.Rect(x, y, x + width, y + height)
-			self.image = None
-			self.frameRect = None
-			self.size = 10, 10
-			self.touchRect = pygame.Rect(self.rect.left, self.rect.top, self.rect.left+self.size[0], self.rect.top+self.size[1])
-			if spriteFileName is not None:
-				self.frameRect = pygame.Rect(index * 100, 0, (index * 100) + 100, 100)
-				self.image = pygame.image.load(Entity.Path + spriteFileName)
-			else:
-				self.image = pygame.Surface((width, height), pygame.SRCALPHA)
-				self.image.fill((255, 0, 0, 200))
-			super(Map.MapObject, self).__init__(self.image, self.rect, self.frameRect)
-		def Update(self):
-			pass
-			#print self.get_draw_cond()
 	
 	def __init__(self):	
 		self.size = 0, 0		
@@ -35,18 +17,24 @@ class Map(object):
 		self.spriteLayers = None
 		self.objects = []
 		self.obstructions = []
-		self.entities = []		
+		self.entities = []
+		self.onScreenEntities = []
 		
 	def Update(self):
 		self.UpdateEntities()
-		self.camera.Update()		
+		self.camera.Update()
 			
 	def UpdateEntities(self):
 		for entity in self.entities:
-			entity.Update()
-			entity.CheckObstructions(self.GetObs)
-			entity.CheckEntities(self.entities)
-			entity.Move()
+			if entity.touchRect.colliderect(self.renderer._cam_rect): # if entity is on screen
+				if not entity in self.onScreenEntities:
+					self.onScreenEntities.append(entity) #add it to on screen entity list
+				entity.Update()
+				entity.CheckObstructions(self.GetObs)
+				entity.CheckEntityCollision(self.onScreenEntities) # only check collision with on screen entities
+				entity.Move()
+			elif entity in self.onScreenEntities: # if entity is not on screen and is in on screen entity list
+				self.onScreenEntities.remove(entity) # remove from on screen entity list
 			
 		for obj in self.objects:
 			obj.Update()
@@ -56,8 +44,8 @@ class Map(object):
 			return self.mapData.layers[layer].content2D[x][y]
 		return -1
 		
-	def AddEntity(self, x, y, layer=1):
-		entity = Entity("entity", x, y, "blanea.png")
+	def AddEntity(self, x, y, layer=1, fileName = "blanea.png"):
+		entity = Entity("entity", x, y, fileName)
 		self.spriteLayers[layer].add_sprite(entity)		
 		self.entities.append(entity)
 		return entity
@@ -102,12 +90,10 @@ class Map(object):
 					imageFileName = obj.properties[property]
 				if property == "index":
 					index = int(obj.properties[property])
-				#print property, obj.properties[property]
-			newObject = Map.MapObject(obj.x, obj.y, obj.width, obj.height, imageFileName, index)
-			self.objects.append(newObject)
-			if self.spriteLayers is not None:
-				self.spriteLayers[0].add_sprite(newObject)
-		
+			#newObject = Map.MapObject(obj.x, obj.y, obj.width, obj.height, imageFileName, index)
+			#self.objects.append(newObject)
+			#if self.spriteLayers is not None:
+			#	self.spriteLayers[0].add_sprite(newObject)
 		
 	def Render(self, screen):
 		if self.spriteLayers is not None:
