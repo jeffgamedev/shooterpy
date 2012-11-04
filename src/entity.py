@@ -47,6 +47,7 @@ class Entity(helperspygame.SpriteLayer.Sprite):
 		self.currentAnimation = walkDown
 		self.frameSize = frameSize[0], frameSize[1]
 		self.framesPerRow = 5
+		self.updateOffScreen = False
 		self.rect = pygame.Rect(self.mapLocation[0], self.mapLocation[1], self.frameSize[0]*scaleFactor, self.frameSize[1]*scaleFactor)
 		self.DebugRectSize()
 		
@@ -65,8 +66,13 @@ class Entity(helperspygame.SpriteLayer.Sprite):
 		print "{0} {1} ".format(self.rect.right - self.rect.left, self.rect.bottom-self.rect.top)
 		
 	def SetControl(self, bool):
-		
 		self.playerControlled = bool
+		self.updateOffScreen = True
+		
+	def ShouldUpdate(self, cameraRectangle):
+		if self.updateOffScreen:
+			return True
+		return self.rect.colliderect(cameraRectangle)
 		
 	def SetupImage(self, spriteFileName):
 		if spriteFileName is None:

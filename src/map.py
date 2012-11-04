@@ -15,10 +15,9 @@ class Map(object):
 		self.renderer = tiledtmxloader.helperspygame.RendererPygame()
 		self.camera = Camera(self.renderer)
 		self.spriteLayers = None
-		self.objects = []
 		self.obstructions = []
 		self.entities = []
-		self.onScreenEntities = []
+		self.updatingEntities = []
 		
 	def Update(self):
 		self.UpdateEntities()
@@ -26,20 +25,18 @@ class Map(object):
 			
 	def UpdateEntities(self):
 		for entity in self.entities:
-			if entity.touchRect.colliderect(self.renderer._cam_rect): # if entity is on screen
+			if entity.ShouldUpdate(self.renderer._cam_rect): # if entity is on screen
 				self.UpdateEntity(entity)
-			elif entity in self.onScreenEntities: # if entity is not on screen and is in on screen entity list
-				self.onScreenEntities.remove(entity) # remove from on screen entity list
+			elif entity in self.updatingEntities: # if entity is not on screen and is in on screen entity list
+				self.updatingEntities.remove(entity) # remove from on screen entity list
 			
-		for obj in self.objects:
-			obj.Update()
 			
 	def UpdateEntity(self, entity):
-		if not entity in self.onScreenEntities:
-			self.onScreenEntities.append(entity) #add it to on screen entity list
+		if not entity in self.updatingEntities:
+			self.updatingEntities.append(entity) #add it to on screen entity list
 		entity.Update()
 		entity.CheckObstructions(self.GetObs)
-		entity.CheckEntityCollision(self.onScreenEntities) # only check collision with on screen entities
+		entity.CheckEntityCollision(self.updatingEntities) # only check collision with on screen entities
 		entity.Move()
 			
 	def GetTile(self, x, y, layer):
