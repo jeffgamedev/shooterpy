@@ -30,9 +30,12 @@ background_color = pygame.Color( 0, 0, 0)
 #Testing TextBoxes
 interruptEvents = overlay.InterruptEventSystem(gameSurface)
 
-interruptEvents.Add(TextBox(gameSurface, textBoxFont, "blane.png", "GOOD EVENING! I have updated the interruptEvents system to be more polymorphic. Use the Add() method instead of AddTextBox etc. That way any time we make a new interruptEvent, we don't need to make a new method for it in the system's class."))
-interruptEvents.Add(TextBox(gameSurface, textBoxFont, "blane.png", "This WILL break the old way of doing things. Just FYI."))
-interruptEvents.Add(TextBox(gameSurface, textBoxFont, "blane.png", "I also changed a couple variable names\ngameSurface is now the surface object\nfont object names have been changed as well."))
+interruptEvents.Add(TextBox(gameSurface, textBoxFont, "blane.png", "Notification Boxes are now dynamic in width depending on the amount of text you put into them! Observe:"))
+
+interruptEvents.Add(NotificationBox(gameSurface, notificationFont, "short"))
+interruptEvents.Add(NotificationBox(gameSurface, notificationFont, "-- - -- -- - Medium-- - -- -- - "))
+interruptEvents.Add(NotificationBox(gameSurface, notificationFont, "-- - -- -- - LOOOOOOOOOOOOOOONNNNNGGGGGGGGG -- - -- -- - "))
+
 map = Map()
 map.LoadMap("firstmap.tmx")
 
