@@ -176,14 +176,12 @@ class TextBoxEvent(InterruptEvent):
 
 class InterruptEventSystem:
     """Handles interrupt Event functionality and user interaction for the main game loop"""
+
     def __init__(self, windowSurfaceObject):
-        self.windowSurfaceObject = windowSurfaceObject
-        
         self.textboxFont = pygame.font.Font('freesansbold.ttf', settings.TEXTBOX_FONT_SIZE)
         self.notificationFont = pygame.font.Font('freesansbold.ttf', settings.NOTIFICATION_FONT_SIZE)
-
+        self.windowSurfaceObject = windowSurfaceObject
         self.currentEvent = None
-        
         self.eventQueue = Queue.Queue()
 
     def Display(self):
@@ -202,22 +200,16 @@ class InterruptEventSystem:
         if self.currentEvent == None and not self.eventQueue.empty():
             self.currentEvent = self.eventQueue.get()
             print "DEBUG: getting from queue"
-            
+
+    # depricated!
     def GetInput(self):
         """DEPRICATED: Works for pygame in general. But functionality has been replaced in the input.py file"""
         if Input.keyboard[pygame.K_RETURN]:
             self.currentEvent = None
 
-    def AddTextBox(self, portrait, message):
-        """Creates a new textbox and adds it to the queue"""
-        textbox = TextBox(self.windowSurfaceObject, self.textboxFont, portrait, message)
-        self.eventQueue.put(textbox )
-        print "DEBUG: adding textbox to queue"
-        
-    def AddNotificationBox(self, message):
-        notification = NotificationBox(self.windowSurfaceObject, self.notificationFont, message)
-        self.eventQueue.put(notification)
-        print "DEBUG: adding notification box to queue"
+    # Truly polymorphic as opposed to separate addTextBox and addNotificationBox Classes
+    def Add(self, eventObject):
+        self.eventQueue.put(eventObject)
         
 
         

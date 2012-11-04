@@ -15,22 +15,24 @@ import settings # for constants, etc
 from pygame.locals import *
 from map import Map
 from input import Input
+from overlay import TextBox, NotificationBox
 
 pygame.init()
 fpsClock = pygame.time.Clock()
 
-windowSurfaceObject = pygame.display.set_mode((settings.SCREEN_WIDTH, settings.SCREEN_HEIGHT))
+gameSurface = pygame.display.set_mode((settings.SCREEN_WIDTH, settings.SCREEN_HEIGHT))
 
 pygame.display.set_caption('Shooter 1, II')
-fontObj = pygame.font.Font('freesansbold.ttf', 22)
+textBoxFont = pygame.font.Font('freesansbold.ttf', settings.TEXTBOX_FONT_SIZE)
+notificationFont = pygame.font.Font('freesansbold.ttf', settings.NOTIFICATION_FONT_SIZE)
 background_color = pygame.Color( 0, 0, 0)
 
 #Testing TextBoxes
-interruptEvents = overlay.InterruptEventSystem(windowSurfaceObject)
-#interruptEvents.AddTextBox("blane.png", "Good day, sir Frog! It appears I have solved the problems with collision detection and entity display! Huzzah! Now we can easily move on to other parts of the game!")
-interruptEvents.AddTextBox("TL_port_blu.bmp", "Sir, it appears the cloning device has gone haywire.")
+interruptEvents = overlay.InterruptEventSystem(gameSurface)
 
-#interruptEvents.AddNotificationBox("Pistol Procured!")
+interruptEvents.Add(TextBox(gameSurface, textBoxFont, "blane.png", "GOOD EVENING! I have updated the interruptEvents system to be more polymorphic. Use the Add() method instead of AddTextBox etc. That way any time we make a new interruptEvent, we don't need to make a new method for it in the system's class."))
+interruptEvents.Add(TextBox(gameSurface, textBoxFont, "blane.png", "This WILL break the old way of doing things. Just FYI."))
+interruptEvents.Add(TextBox(gameSurface, textBoxFont, "blane.png", "I also changed a couple variable names\ngameSurface is now the surface object\nfont object names have been changed as well."))
 map = Map()
 map.LoadMap("firstmap.tmx")
 
@@ -64,7 +66,7 @@ while True: # primary game loop
 	Input.Update(interruptEvents)
 	
 	##### DISPLAY UPDATES #####	
-	map.Render(windowSurfaceObject)
+	map.Render(gameSurface)
 	interruptEvents.Display()
 	pygame.display.update()
 	
