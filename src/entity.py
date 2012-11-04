@@ -16,17 +16,9 @@
 #	we should look into how practical that will be to
 #	do.
 ############################################################
-
 from tiledtmxloader import helperspygame
-from input import Input
-from random import randint
 import settings
 import pygame
-
-walkDown = [0, 1, 2, 1, 0, 3, 4, 3]
-walkUp= [5, 6, 7, 6, 5, 8, 9, 8]
-walkLeft= [10, 11, 12, 11, 10, 13, 14, 13]
-walkRight= [15, 16, 17, 16, 15, 18, 19, 18]
 
 class Entity(helperspygame.SpriteLayer.Sprite):
 	"""Entity class is the base class for all person-like characters in the game"""
@@ -41,33 +33,24 @@ class Entity(helperspygame.SpriteLayer.Sprite):
 		self.velocityY = 1
 		self.visible = True
 		self.collidable = True
-		self.direction = 1
+		self.trigger = None
+		self.direction = 1		
 		self.acceleration = 0.5, 0.5
 		self.maxVelocity = 5, 5
-		self.currentAnimation = walkDown
+		self.currentAnimation = None
 		self.frameSize = frameSize[0], frameSize[1]
 		self.framesPerRow = 5
 		self.updateOffScreen = False
 		self.rect = pygame.Rect(self.mapLocation[0], self.mapLocation[1], self.frameSize[0]*scaleFactor, self.frameSize[1]*scaleFactor)
 		self.DebugRectSize()
-		
 		self.touchRect = pygame.Rect(self.rect.left, self.rect.top, self.size[0], self.size[1])
 		self.frameRect = pygame.Rect(0, 0, self.frameSize[0]*scaleFactor, self.frameSize[1]*scaleFactor)
-		
 		self.scaleFactor = scaleFactor
 		self.SetupImage(spriteFileName)
-		self.pickupRange = 10
-		self.playerControlled = False
-		
 		super(Entity, self).__init__(self.image, self.rect, self.frameRect)
-
-	
-	def DebugRectSize(self):
-		print "{0} {1} ".format(self.rect.right - self.rect.left, self.rect.bottom-self.rect.top)
 		
-	def SetControl(self, bool):
-		self.playerControlled = bool
-		self.updateOffScreen = True
+	def Update(self):
+		self.Animate()
 		
 	def ShouldUpdate(self, cameraRectangle):
 		if self.updateOffScreen:
@@ -76,7 +59,6 @@ class Entity(helperspygame.SpriteLayer.Sprite):
 		
 	def SetupImage(self, spriteFileName):
 		if spriteFileName is None:
-			#self.image = pygame.Surface((self.frameSize[0], self.frameSize[1]), pygame.SRCALPHA)
 			self.image = pygame.Surface((self.size[0], self.size[1]), pygame.SRCALPHA)
 			self.image.fill((255, 0, 0, 200))
 		else:
@@ -84,30 +66,12 @@ class Entity(helperspygame.SpriteLayer.Sprite):
 			x = self.image.get_width()
 			y = self.image.get_height()
 			self.image = pygame.transform.scale(self.image, (x*self.scaleFactor, y*self.scaleFactor))
-		
-	def Update(self):
-		if self.playerControlled:
-			self.PlayerControl()
-		else:
-			self.RandomAI()
-		self.Animate()
-				
-	def WalkUp(self):
-		self.velocityY = settings.Clamp(self.velocityY - self.acceleration[1], -self.maxVelocity[1], self.maxVelocity[1])
-		self.currentAnimation = walkUp
-		self.direction = 0
-	def WalkDown(self):
-		self.velocityY = settings.Clamp(self.velocityY + self.acceleration[1], -self.maxVelocity[1], self.maxVelocity[1])
-		self.currentAnimation = walkDown
-		self.direction = 1
-	def WalkLeft(self):
-		self.velocityX = settings.Clamp(self.velocityX - self.acceleration[0], -self.maxVelocity[0], self.maxVelocity[0])
-		self.currentAnimation = walkLeft
-		self.direction = 2
-	def WalkRight(self):
-		self.velocityX = settings.Clamp(self.velocityX + self.acceleration[0], -self.maxVelocity[0], self.maxVelocity[0])
-		self.currentAnimation = walkRight
-		self.direction = 3
+			
+	def Accelerate(self, x=0, y=0):
+		if x != 0:
+			self.velocityX = settings.Clamp(self.velocityX + x, -self.maxVelocity[0], self.maxVelocity[0])
+		if y != 0:
+			self.velocityY = settings.Clamp(self.velocityY + y, -self.maxVelocity[1], self.maxVelocity[1])
 		
 	def DeccelerateY(self):
 		if self.velocityY < self.acceleration[1] and self.velocityY > -self.acceleration[1]:
@@ -120,40 +84,6 @@ class Entity(helperspygame.SpriteLayer.Sprite):
 			self.velocityX = 0
 		else:
 			self.velocityX = self.velocityX * settings.FRICTION
-		
-	def RandomAI(self):
-		if randint(0, 20) == 0: # choose new direction
-			self.direction = randint(0, 10)
-		
-		if self.direction == 0:
-			self.WalkUp()
-			#self.DeccelerateX()
-		elif self.direction == 1:
-			self.WalkDown()
-			#self.DeccelerateX()
-		elif self.direction == 2:
-			self.WalkLeft()
-			#self.DeccelerateY()
-		elif self.direction == 3:
-			self.WalkRight()
-			#self.DeccelerateY()
-		else:
-			self.DeccelerateX()
-			self.DeccelerateY()
-		
-	def PlayerControl(self):
-		if Input.keyboard["up"]:
-			self.WalkUp()
-		elif Input.keyboard["down"]:
-			self.WalkDown()
-		elif self.velocityY != 0:
-			self.DeccelerateY()
-		if Input.keyboard["left"]:
-			self.WalkLeft()
-		elif Input.keyboard["right"]:
-			self.WalkRight()
-		elif self.velocityX != 0:
-			self.DeccelerateX()		
 			
 	def CheckObstructions(self, obs):
 		if self.velocityX < 0:
@@ -183,9 +113,13 @@ class Entity(helperspygame.SpriteLayer.Sprite):
 				
 	def CheckEntityCollision(self, ents):
 		for ent in ents:
-			if ent is not self and ent.collidable:
-				if self.touchRect.colliderect(ent.touchRect):
-					self.PushAgainstEntity(ent)
+			if ent is not self:
+				if ent.collidable or ent.trigger: # check if should collision check
+					if self.touchRect.colliderect(ent.touchRect):
+						if ent.collidable: # its a physical collision
+							self.PushAgainstEntity(ent)
+						if ent.trigger is not None: # theres a collision and should be an even triggered
+							pass 
 	
 	def PushAgainstEntity(self, ent):
 		if self.velocityX > 0 and self.touchRect.right <= ent.touchRect.right:
@@ -218,7 +152,6 @@ class Entity(helperspygame.SpriteLayer.Sprite):
 			frameY = int(int(frame)/self.framesPerRow)
 			self.frameRect.left = frameX * self.frameSize[0]*self.scaleFactor
 			self.frameRect.top = frameY * self.frameSize[1]*self.scaleFactor
-			
 	
 	def Move(self):
 		self.mapLocation = self.mapLocation[0] + self.velocityX, self.mapLocation[1] + self.velocityY

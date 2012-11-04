@@ -4,10 +4,10 @@ import tiledtmxloader.helperspygame
 import pygame
 from camera import Camera
 from entity import Entity
+from characterentity import CharacterEntity
 
 class Map(object):
 	Path = "../maps/"
-	
 	def __init__(self):	
 		self.size = 0, 0		
 		self.mapData = None		
@@ -45,7 +45,7 @@ class Map(object):
 		return -1
 		
 	def AddEntity(self, x, y, layer=1, fileName = "blanea.png"):
-		entity = Entity("entity", x, y, fileName)
+		entity = CharacterEntity("entity", x, y, fileName)
 		self.spriteLayers[layer].add_sprite(entity)		
 		self.entities.append(entity)
 		return entity
