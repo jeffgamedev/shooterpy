@@ -19,18 +19,29 @@ class NotificationBox(InterruptEvent):
     def __init__(self, destinationSurface, font, message, position=settings.NOTIFICATION_BOX_POSITION, size=settings.NOTIFICATION_BOX_SIZE, bgcolor=settings.TEXTBOX_COLOR, textcolor=settings.TEXTBOX_TEXT_COLOR, borderColor=settings.TEXTBOX_BORDER_COLOR, opacity=settings.TEXTBOX_OPACITY):
         """Setup for Notification Box """
         self.destinationSurface = destinationSurface # eg. the screen
-        self.tempSurface = pygame.Surface(size) #holding place to be displayed
         self.font = font # pygame font object
+        
         self.bgcolor = bgcolor # should be in (r, g, b) format
         self.borderColor = borderColor # should be in (r, g, b) format
-        self.rect = pygame.Rect ( position, size )
-        self.borderRect = pygame.Rect((2,2), (size[0]-5, size[1]-5))
         self.textcolor = textcolor
-        self.textMargin = settings.NOTIFICATION_BOX_TEXT_MARGIN
         self.opacity = opacity
-        self.NewNotification(message)
         
-    def NewNotification(self, message):
+        self.textMargin = settings.NOTIFICATION_BOX_TEXT_MARGIN
+        
+        # Set size based on message size
+        self.size = (self.font.size(message)[0] + self.textMargin*2, size[1])
+        self.tempSurface = pygame.Surface(self.size)
+        
+        #Set position based on size
+        self.position = (destinationSurface.get_width()/2-self.size[0]/2, position[1]) 
+        
+        self.rect = pygame.Rect ( self.position, self.size )
+        self.borderRect = pygame.Rect((2,2), (self.size[0]-4, self.size[1]-4))
+        self.DrawNotification(message)
+        
+    def DrawNotification(self, message):
+        
+        
         self.DrawBoxToTempSurface()
         self.DrawTextToTempSurface(message)
     
@@ -178,8 +189,6 @@ class InterruptEventSystem:
     """Handles interrupt Event functionality and user interaction for the main game loop"""
 
     def __init__(self, windowSurfaceObject):
-        self.textboxFont = pygame.font.Font('freesansbold.ttf', settings.TEXTBOX_FONT_SIZE)
-        self.notificationFont = pygame.font.Font('freesansbold.ttf', settings.NOTIFICATION_FONT_SIZE)
         self.windowSurfaceObject = windowSurfaceObject
         self.currentEvent = None
         self.eventQueue = Queue.Queue()
