@@ -23,14 +23,14 @@ import pygame
 class Entity(helperspygame.SpriteLayer.Sprite):
 	"""Entity class is the base class for all person-like characters in the game"""
 	Path = "../gfx/sprites/"
-	def __init__(self, entityName, startX, startY, spriteFileName = None, frameSize = (17, 31), scaleFactor = settings.SPRITE_SCALE_FACTOR):
+	def __init__(self, entityName, startX, startY, spriteFileName = None, size = (16, 16), frameSize = (17, 31), scaleFactor = settings.SPRITE_SCALE_FACTOR):
 		self.mapLocation = (startX, startY)
 		self.name = entityName
 		self.layer = 0
-		self.size = 16 * scaleFactor, 16 * scaleFactor		
+		self.size = size[0] * scaleFactor, size[1] * scaleFactor
 		self.frame = 0
-		self.velocityX = 1
-		self.velocityY = 1
+		self.velocityX = 0
+		self.velocityY = 0
 		self.visible = True
 		self.collidable = True
 		self.trigger = None
@@ -42,7 +42,6 @@ class Entity(helperspygame.SpriteLayer.Sprite):
 		self.framesPerRow = 5
 		self.updateOffScreen = False
 		self.rect = pygame.Rect(self.mapLocation[0], self.mapLocation[1], self.frameSize[0]*scaleFactor, self.frameSize[1]*scaleFactor)
-		self.DebugRectSize()
 		self.touchRect = pygame.Rect(self.rect.left, self.rect.top, self.size[0], self.size[1])
 		self.frameRect = pygame.Rect(0, 0, self.frameSize[0]*scaleFactor, self.frameSize[1]*scaleFactor)
 		self.scaleFactor = scaleFactor
@@ -50,6 +49,10 @@ class Entity(helperspygame.SpriteLayer.Sprite):
 		super(Entity, self).__init__(self.image, self.rect, self.frameRect)
 		
 	def Update(self):
+		if self.velocityX != 0:
+			self.DeccelerateX()
+		if self.velocityY != 0:
+			self.DeccelerateY()
 		self.Animate()
 		
 	def ShouldUpdate(self, cameraRectangle):
@@ -119,7 +122,7 @@ class Entity(helperspygame.SpriteLayer.Sprite):
 						if ent.collidable: # its a physical collision
 							self.PushAgainstEntity(ent)
 						if ent.trigger is not None: # theres a collision and should be an even triggered
-							pass 
+							ent.trigger(ent)
 	
 	def PushAgainstEntity(self, ent):
 		if self.velocityX > 0 and self.touchRect.right <= ent.touchRect.right:

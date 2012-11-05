@@ -30,7 +30,6 @@ class CharacterEntity(Entity):
 		super (CharacterEntity, self).__init__(entityName, startX, startY, spriteFileName)
 		self.currentAnimation = walkDown
 		self.playerControlled = False
-		self.DebugRectSize()
 	
 	def DebugRectSize(self):
 		print "{0} {1} ".format(self.rect.right - self.rect.left, self.rect.bottom-self.rect.top)

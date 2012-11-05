@@ -5,9 +5,11 @@ import pygame
 from camera import Camera
 from entity import Entity
 from characterentity import CharacterEntity
+from itementity import ItemEntity
 
 class Map(object):
 	Path = "../maps/"
+	CurrentMap = None
 	def __init__(self):	
 		self.size = 0, 0		
 		self.mapData = None		
@@ -18,6 +20,7 @@ class Map(object):
 		self.obstructions = []
 		self.entities = []
 		self.updatingEntities = []
+		self.script = None
 		
 	def Update(self):
 		self.UpdateEntities()
@@ -44,8 +47,14 @@ class Map(object):
 			return self.mapData.layers[layer].content2D[x][y]
 		return -1
 		
-	def AddEntity(self, x, y, layer=1, fileName = "blanea.png"):
+	def AddEntity(self, x, y, layer=1, fileName ="blanea.png"):
 		entity = CharacterEntity("entity", x, y, fileName)
+		self.spriteLayers[layer].add_sprite(entity)		
+		self.entities.append(entity)
+		return entity
+		
+	def AddItemEntity(self, index, x, y, trigger=None, layer=1):
+		entity = ItemEntity(index, x, y, trigger)
 		self.spriteLayers[layer].add_sprite(entity)		
 		self.entities.append(entity)
 		return entity
@@ -53,12 +62,13 @@ class Map(object):
 	def RemoveEntity(self, entity):
 		if entity in self.entities:
 			self.entities.remove(entity)
-		
+		if entity in self.updatingEntities:
+			self.updatingEntities.remove(entity)
 		for spritelayer in self.spriteLayers:
 			if hasattr(spritelayer, 'remove_sprite'):
 				spritelayer.remove_sprite(entity)
+		print "removed entity"
 
-		
 	def GetObs(self, x, y):
 		if x >= 0 and  y >= 0 and x < self.mapData.width and y < self.mapData.height:
 			return self.obstructions[x][y]
@@ -78,32 +88,42 @@ class Map(object):
 				self.spriteLayers.pop(i)
 				break
 				
+		if self.mapData.properties["script"]:
+			try:
+				self.script = __import__( self.mapData.properties["script"] )
+			except:
+				self.script = None
+				print "no script file of name " + self.mapData.properties["script"]
+		else:
+			print "no map property 'script'"
+			
 		objectList = None
 		#find object layer
 		for i in range(len(self.mapData.layers)):
 			if self.mapData.layers[i].is_object_group:
 				objectList = self.mapData.layers[i].objects
-				#self.mapData.layers.pop(i)
-				#self.spriteLayers.pop(i)
 				break
 		
 		if objectList is not None:
 			self.FilterMapObjects(objectList)
+			
+		Map.CurrentMap = self
 				
 	def FilterMapObjects(self, objectList):
 		for obj in objectList:
-			imageFileName = None
-			index = 0
-			for property in obj.properties:
-				if property == "image":
-					imageFileName = obj.properties[property]
-				if property == "index":
-					index = int(obj.properties[property])
-			#newObject = Map.MapObject(obj.x, obj.y, obj.width, obj.height, imageFileName, index)
-			#self.objects.append(newObject)
-			#if self.spriteLayers is not None:
-			#	self.spriteLayers[0].add_sprite(newObject)
-		
+			type = obj.type.lower()
+			if type == "item": # object type is an item
+				index = 0
+				trigger = None
+				for property in obj.properties:
+					if property == "index":
+						index = int(obj.properties[property]) # get item index
+					if property == "trigger":
+						if self.script is not None:
+							if hasattr(self.script, obj.properties[property]):
+								trigger = getattr(self.script, obj.properties[property])
+				self.AddItemEntity(index, obj.x, obj.y, trigger)
+
 	def Render(self, screen):
 		if self.spriteLayers is not None:
 			for spriteLayer in self.spriteLayers:
