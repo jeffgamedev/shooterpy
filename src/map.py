@@ -50,6 +50,15 @@ class Map(object):
 		self.entities.append(entity)
 		return entity
 		
+	def RemoveEntity(self, entity):
+		if entity in self.entities:
+			self.entities.remove(entity)
+		
+		for spritelayer in self.spriteLayers:
+			if hasattr(spritelayer, 'remove_sprite'):
+				spritelayer.remove_sprite(entity)
+
+		
 	def GetObs(self, x, y):
 		if x >= 0 and  y >= 0 and x < self.mapData.width and y < self.mapData.height:
 			return self.obstructions[x][y]
