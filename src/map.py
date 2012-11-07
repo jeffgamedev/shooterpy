@@ -6,11 +6,12 @@ from camera import Camera
 from entity import Entity
 from characterentity import CharacterEntity
 from itementity import ItemEntity
+from overlay import TextBoxHelper, InterruptEventSystem
 
 class Map(object):
 	Path = "../maps/"
 	CurrentMap = None
-	def __init__(self):	
+	def __init__(self, gameSurface):	
 		self.size = 0, 0		
 		self.mapData = None		
 		self.resources = tiledtmxloader.helperspygame.ResourceLoaderPygame()
@@ -21,10 +22,14 @@ class Map(object):
 		self.entities = []
 		self.updatingEntities = []
 		self.script = None
+		self.interruptEvents = InterruptEventSystem(gameSurface)
+		TextBoxHelper(gameSurface, self.interruptEvents) # instantiate a class that will fill a static instance
 		
 	def Update(self):
-		self.UpdateEntities()
-		self.camera.Update()
+		self.interruptEvents.Update()
+		if not self.interruptEvents.HasActiveEvent(): # Map Logic does not update while an interrupt event is waiting to be dismissed!
+			self.UpdateEntities()
+			self.camera.Update()
 			
 	def UpdateEntities(self):
 		for entity in self.entities:
@@ -106,9 +111,12 @@ class Map(object):
 		
 		if objectList is not None:
 			self.FilterMapObjects(objectList)
-			
+
 		Map.CurrentMap = self
-				
+		
+		if self.script and hasattr(self.script, "Start"):
+			self.script.Start(self)
+	
 	def FilterMapObjects(self, objectList):
 		for obj in objectList:
 			type = obj.type.lower()
@@ -128,3 +136,4 @@ class Map(object):
 		if self.spriteLayers is not None:
 			for spriteLayer in self.spriteLayers:
 				self.camera.renderer.render_layer(screen, spriteLayer)
+		self.interruptEvents.Display()

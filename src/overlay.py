@@ -219,6 +219,23 @@ class InterruptEventSystem:
     # Truly polymorphic as opposed to separate addTextBox and addNotificationBox Classes
     def Add(self, eventObject):
         self.eventQueue.put(eventObject)
-        
 
-        
+class TextBoxHelper(object):
+	Instance = None
+	def __init__(self, surface, interruptEvents, textboxFont=None, notificationFont=None):
+		TextBoxHelper.Instance = self
+		self.surface = surface
+		self.interruptEvents = interruptEvents
+		self.textboxFont = textboxFont
+		self.notificationFont = notificationFont
+		if notificationFont is None:
+			self.notificationFont = pygame.font.Font('freesansbold.ttf', settings.NOTIFICATION_FONT_SIZE)		
+		if textboxFont is None:
+			self.textboxFont = pygame.font.Font('freesansbold.ttf', settings.TEXTBOX_FONT_SIZE)		
+		
+	def TextBox(self, portrait=None, text=""):
+		self.interruptEvents.Add(TextBox(self.surface, self.textboxFont, portrait, text))
+		
+	def Notification(self, text=""):
+		self.interruptEvents.Add(NotificationBox(self.surface, self.notificationFont, text))
+		
