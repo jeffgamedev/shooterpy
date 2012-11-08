@@ -14,6 +14,8 @@ import settings # for constants, etc
 from pygame.locals import *
 from map import Map
 from input import Input
+from overlay import TextBoxHelper, InterruptEventSystem
+
 
 # game dependencies initiation
 pygame.init()
@@ -21,7 +23,9 @@ fpsClock = pygame.time.Clock()
 gameSurface = pygame.display.set_mode((settings.SCREEN_WIDTH, settings.SCREEN_HEIGHT))
 pygame.display.set_caption('Shooter 1, II')
 background_color = pygame.Color( 0, 0, 0)
-map = Map(gameSurface)
+map = Map()
+interruptEvents = InterruptEventSystem(gameSurface)
+TextBoxHelper(gameSurface, interruptEvents) #instantiate class to fill static instance
 # level setup
 map.LoadMap("firstmap.tmx")
 pygame.mixer.music.load("../music/igelkott.mod")
@@ -30,10 +34,13 @@ map.Update() #fixes the jump at the beginning. would be best to fix the source o
 
 while True: # primary game loop	
 	##### LOGIC UPDATES #####
-	map.Update()
-	Input.Update(map.interruptEvents)
+	interruptEvents.Update()
+	if not interruptEvents.HasActiveEvent(): # Map Logic does not update while an interrupt event is waiting to be dismissed!
+		map.Update()
+	Input.Update(interruptEvents)
 	##### DISPLAY UPDATES #####	
 	map.Render(gameSurface)	
+	interruptEvents.Display()
 	pygame.display.update()
 	#Framerate Regulation
 	fpsClock.tick(30);
