@@ -22,6 +22,13 @@ class Map(object):
 		self.updatingEntities = []
 		self.script = None
 		
+	def GetPlayer(self):
+		for entity in self.entities:
+			if hasattr(entity, "playerControlled"):
+				if entity.playerControlled == True:
+					return entity
+		return None
+		
 	def Update(self):
 		self.UpdateEntities()
 		self.camera.Update()
@@ -125,6 +132,21 @@ class Map(object):
 							if hasattr(self.script, obj.properties[property]):
 								trigger = getattr(self.script, obj.properties[property])
 				self.AddItemEntity(index, obj.x, obj.y, trigger)
+			elif type == "character": # object is character entity
+				trigger = None
+				image = None
+				layer = 1
+				for property in obj.properties:
+					if property == "layer":
+						layer = int(obj.properties[property])
+					elif property == "image":
+						image = obj.properties[property]
+					elif property == "trigger":
+						if self.script is not None:
+							if hasattr(self.script, obj.properties[property]):
+								trigger = getattr(self.script, obj.properties[property])
+				ent = self.AddEntity(obj.x, obj.y, layer, image)
+				ent.trigger = trigger
 
 	def Render(self, screen):
 		if self.spriteLayers is not None:

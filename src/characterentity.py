@@ -30,9 +30,55 @@ class CharacterEntity(Entity):
 		super (CharacterEntity, self).__init__(entityName, startX, startY, spriteFileName)
 		self.currentAnimation = walkDown
 		self.playerControlled = False
+		self.followTarget = None
+		self.followIndex = 0
+		self.steps = [self.mapLocation] * 20
 	
 	def DebugRectSize(self):
 		print "{0} {1} ".format(self.rect.right - self.rect.left, self.rect.bottom-self.rect.top)
+		
+	def Move(self):
+		super(CharacterEntity, self).Move()
+		if self.playerControlled:
+			self.LogSteps()
+			
+	def SetFollowTarget(self, entity, followIndex = 12):
+		self.followTarget = entity
+		self.followIndex = followIndex
+		self.collidable = False
+		
+	def FollowCurrentTarget(self):
+		if len(self.followTarget.steps) > self.followIndex:
+			step = self.followTarget.steps[self.followIndex]	
+			x, y = int(self.mapLocation[0]), int(self.mapLocation[1])
+			walked = False
+			if x < step[0]:
+				self.WalkRight()
+				walked = True
+			elif x > step[0]:
+				self.WalkLeft()
+				walked = True
+			if y < step[1]:
+				self.WalkDown()
+				walked = True
+			elif y > step[1]:
+				self.WalkUp()
+				walked = True
+			self.mapLocation = step # force entity in step
+			if walked:
+				self.velocityX, self.velocityY = 0.001, 0.001 # allows the entity to animate but not stray
+			else:
+				self.velocityX, self.velocityY = 0, 0 # stops entity animation and additional movement
+			
+	def LogSteps(self):
+		step = int(self.mapLocation[0]), int(self.mapLocation[1])
+		if len(self.steps) > 0:
+			if self.steps[0] != step:
+				self.steps.insert(0, step)
+			if len(self.steps) > 20:
+				self.steps.pop()
+		else:
+			self.steps.insert(0, step)
 		
 	def SetControl(self, bool):
 		self.playerControlled = bool
@@ -46,6 +92,8 @@ class CharacterEntity(Entity):
 	def Update(self):
 		if self.playerControlled:
 			self.PlayerControl()
+		elif self.followTarget is not None:
+			self.FollowCurrentTarget()
 		else:
 			self.RandomAI()
 		self.Animate()

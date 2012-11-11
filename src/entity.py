@@ -23,7 +23,7 @@ import pygame
 class Entity(helperspygame.SpriteLayer.Sprite):
 	"""Entity class is the base class for all person-like characters in the game"""
 	Path = "../gfx/sprites/"
-	def __init__(self, entityName, startX, startY, spriteFileName = None, size = (16, 16), frameSize = (17, 31), scaleFactor = settings.SPRITE_SCALE_FACTOR):
+	def __init__(self, entityName, startX, startY, spriteFileName = None, size = (16, 17), frameSize = (17, 33), scaleFactor = settings.SPRITE_SCALE_FACTOR):
 		self.mapLocation = (startX, startY)
 		self.name = entityName
 		self.layer = 0
@@ -119,7 +119,7 @@ class Entity(helperspygame.SpriteLayer.Sprite):
 			if ent is not self:
 				if ent.collidable or ent.trigger: # check if should collision check
 					if self.touchRect.colliderect(ent.touchRect):
-						if ent.collidable: # its a physical collision
+						if ent.collidable and self.collidable: # its a physical collision
 							self.PushAgainstEntity(ent)
 						if ent.trigger is not None: # theres a collision and should be an even triggered
 							ent.trigger(ent)

@@ -29,5 +29,12 @@
     <property name="trigger" value="Test"/>
    </properties>
   </object>
+  <object name="Guard" type="character" x="735" y="408" width="35" height="40">
+   <properties>
+    <property name="image" value="guard.png"/>
+    <property name="layer" value="1"/>
+    <property name="trigger" value="GuardJoin"/>
+   </properties>
+  </object>
  </objectgroup>
 </map>
