@@ -19,6 +19,7 @@
 from tiledtmxloader import helperspygame
 import settings
 import pygame
+import random
 
 class Entity(helperspygame.SpriteLayer.Sprite):
 	"""Entity class is the base class for all person-like characters in the game"""
@@ -69,8 +70,17 @@ class Entity(helperspygame.SpriteLayer.Sprite):
 			x = self.image.get_width()
 			y = self.image.get_height()
 			self.image = pygame.transform.scale(self.image, (x*self.scaleFactor, y*self.scaleFactor))
-			
+	
+	def ChooseStartFrame(self):
+		"""Determines the frame for the character to start walking on in order to keep them out of sync"""
+		startFrame = random.randint(0,len(self.currentAnimation)-1)
+		self.SetFrame(startFrame)
+		self.frame = startFrame
+	
+	
 	def Accelerate(self, x=0, y=0):
+		if self.velocityX == 0 and self.velocityY == 0:
+			self.ChooseStartFrame();
 		if x != 0:
 			self.velocityX = settings.Clamp(self.velocityX + x, -self.maxVelocity[0], self.maxVelocity[0])
 		if y != 0:
