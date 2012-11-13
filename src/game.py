@@ -28,7 +28,7 @@ interruptEvents = InterruptEventSystem(gameSurface)
 TextBoxHelper(gameSurface, interruptEvents) #instantiate class to fill static instance
 # level setup
 map.LoadMap("firstmap.tmx")
-pygame.mixer.music.load("../music/igelkott.mod")
+pygame.mixer.music.load("../music/sledpuller.it")
 pygame.mixer.music.play(1)
 map.Update() #fixes the jump at the beginning. would be best to fix the source of the problem tho.
 
@@ -43,4 +43,4 @@ while True: # primary game loop
 	interruptEvents.Display()
 	pygame.display.update()
 	#Framerate Regulation
-	fpsClock.tick(30);
+	fpsClock.tick(settings.FRAMES_PER_SECOND);

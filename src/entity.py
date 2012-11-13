@@ -24,7 +24,7 @@ import random
 class Entity(helperspygame.SpriteLayer.Sprite):
 	"""Entity class is the base class for all person-like characters in the game"""
 	Path = "../gfx/sprites/"
-	def __init__(self, entityName, startX, startY, spriteFileName = None, size = (16, 17), frameSize = (17, 33), scaleFactor = settings.SPRITE_SCALE_FACTOR):
+	def __init__(self, entityName, startX, startY, spriteFileName = None, size = (16, 12), frameSize = (17, 33), scaleFactor = settings.SPRITE_SCALE_FACTOR):
 		self.mapLocation = (startX, startY)
 		self.name = entityName
 		self.layer = 0
@@ -39,6 +39,7 @@ class Entity(helperspygame.SpriteLayer.Sprite):
 		self.acceleration = 0.5, 0.5
 		self.maxVelocity = 5, 5
 		self.currentAnimation = None
+		self.spriteOffset = 0, -18
 		self.frameSize = frameSize[0], frameSize[1]
 		self.framesPerRow = 5
 		self.updateOffScreen = False
@@ -77,14 +78,17 @@ class Entity(helperspygame.SpriteLayer.Sprite):
 		self.SetFrame(startFrame)
 		self.frame = startFrame
 	
-	
 	def Accelerate(self, x=0, y=0):
 		if self.velocityX == 0 and self.velocityY == 0:
 			self.ChooseStartFrame();
-		if x != 0:
-			self.velocityX = settings.Clamp(self.velocityX + x, -self.maxVelocity[0], self.maxVelocity[0])
-		if y != 0:
-			self.velocityY = settings.Clamp(self.velocityY + y, -self.maxVelocity[1], self.maxVelocity[1])
+		if x < 0:
+			self.velocityX = settings.Clamp(self.velocityX + x, -self.maxVelocity[0], 0)
+		elif x > 0:
+			self.velocityX = settings.Clamp(self.velocityX + x, 0, self.maxVelocity[0])
+		if y < 0:
+			self.velocityY = settings.Clamp(self.velocityY + y, -self.maxVelocity[1], 0)
+		elif y > 0:
+			self.velocityY = settings.Clamp(self.velocityY + y, 0, self.maxVelocity[1])
 		
 	def DeccelerateY(self):
 		if self.velocityY < self.acceleration[1] and self.velocityY > -self.acceleration[1]:
@@ -153,7 +157,7 @@ class Entity(helperspygame.SpriteLayer.Sprite):
 			if self.frame >= len(self.currentAnimation):
 				self.frame = 0
 			self.SetFrame(self.frame)
-			self.frame = self.frame + .25
+			self.frame = self.frame + settings.ENTITY_ANIMATION_SPEED
 		elif self.frame != 0:
 			self.frame = 0
 			self.SetFrame(0)
@@ -168,7 +172,7 @@ class Entity(helperspygame.SpriteLayer.Sprite):
 	
 	def Move(self):
 		self.mapLocation = self.mapLocation[0] + self.velocityX, self.mapLocation[1] + self.velocityY
-		self.rect.left = self.mapLocation[0]
-		self.rect.top = self.mapLocation[1] - self.size[1]
+		self.rect.left = self.mapLocation[0] + self.spriteOffset[0]
+		self.rect.top = self.mapLocation[1] - self.size[1] + self.spriteOffset[1]
 		self.touchRect.left = self.rect.left
 		self.touchRect.top= self.rect.top
