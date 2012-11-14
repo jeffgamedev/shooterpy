@@ -35,7 +35,7 @@ class Entity(helperspygame.SpriteLayer.Sprite):
 		self.visible = True
 		self.collidable = True
 		self.trigger = None
-		self.direction = 1		
+		self.direction = settings.DIRECTION_DOWN		
 		self.acceleration = 0.5, 0.5
 		self.maxVelocity = 5, 5
 		self.currentAnimation = None

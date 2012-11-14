@@ -39,16 +39,19 @@ class CharacterEntity(Entity):
 		print "{0} {1} ".format(self.rect.right - self.rect.left, self.rect.bottom-self.rect.top)
 		
 	def Move(self):
+		'''overriden method calls super and logs footsteps if player controlled'''
 		super(CharacterEntity, self).Move()
 		if self.playerControlled:
 			self.LogSteps()
 			
 	def SetFollowTarget(self, entity, followIndex = 12):
+		'''sets the target character entity to follow, specifying which footstep with followIndex'''
 		self.followTarget = entity
 		self.followIndex = followIndex
 		self.collidable = False
 		
 	def FollowCurrentTarget(self):
+		'''AI to follow on the targeted footstep'''
 		if len(self.followTarget.steps) > self.followIndex:
 			step = self.followTarget.steps[self.followIndex]	
 			x, y = int(self.mapLocation[0]), int(self.mapLocation[1])
@@ -72,6 +75,7 @@ class CharacterEntity(Entity):
 				self.velocityX, self.velocityY = 0, 0 # stops entity animation and additional movement
 			
 	def LogSteps(self):
+		'''logs the steps of a character'''
 		step = int(self.mapLocation[0]), int(self.mapLocation[1])
 		if len(self.steps) > 0:
 			if self.steps[0] != step:
@@ -82,15 +86,12 @@ class CharacterEntity(Entity):
 			self.steps.insert(0, step)
 		
 	def SetControl(self, bool):
+		'''sets the entity to player controlled settings'''
 		self.playerControlled = bool
 		self.updateOffScreen = True
-		
-	def ShouldUpdate(self, cameraRectangle):
-		if self.updateOffScreen:
-			return True
-		return self.rect.colliderect(cameraRectangle)
 
 	def Update(self):
+		'''overriden update method checks if entity should be player controlled, is following another entity, or is on a certain AI. also calls animation method.'''
 		if self.playerControlled:
 			self.PlayerControl()
 		elif self.followTarget is not None:
@@ -100,33 +101,37 @@ class CharacterEntity(Entity):
 		self.Animate()
 				
 	def WalkUp(self):
+		'''basic acceleration and animation setting method (UP)'''
 		self.Accelerate(0, -self.acceleration[1])
 		self.currentAnimation = walkUp
-		self.direction = 0
+		self.direction = settings.DIRECTION_UP
 	def WalkDown(self):
+		'''basic acceleration and animation setting method (DOWN)'''
 		self.Accelerate(0, self.acceleration[1])
 		self.currentAnimation = walkDown
-		self.direction = 1
+		self.direction = settings.DIRECTION_DOWN
 	def WalkLeft(self):
+		'''basic acceleration and animation setting method (LEFT)'''
 		self.Accelerate(-self.acceleration[0])
 		self.currentAnimation = walkLeft
-		self.direction = 2
+		self.direction = settings.DIRECTION_LEFT
 	def WalkRight(self):
+		'''basic acceleration and animation setting method (RIGHT)'''
 		self.Accelerate(self.acceleration[0])
 		self.currentAnimation = walkRight
-		self.direction = 3
+		self.direction = settings.DIRECTION_RIGHT
 		
 	def RandomAI(self):
 		if randint(0, 20) == 0: # choose new direction
 			self.direction = randint(0, 10)
 		
-		if self.direction == 0:
+		if self.direction == settings.DIRECTION_UP:
 			self.WalkUp()
-		elif self.direction == 1:
+		elif self.direction == settings.DIRECTION_DOWN:
 			self.WalkDown()
-		elif self.direction == 2:
+		elif self.direction == settings.DIRECTION_LEFT:
 			self.WalkLeft()
-		elif self.direction == 3:
+		elif self.direction == settings.DIRECTION_RIGHT:
 			self.WalkRight()
 		else:
 			self.DeccelerateX()
