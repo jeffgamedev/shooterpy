@@ -16,6 +16,7 @@
 #	we should look into how practical that will be to
 #	do.
 ############################################################
+import settings
 from input import Input
 from random import randint
 from entity import Entity
@@ -32,7 +33,7 @@ class CharacterEntity(Entity):
 		self.playerControlled = False
 		self.followTarget = None
 		self.followIndex = 0
-		self.steps = [self.mapLocation] * 20
+		self.steps = [self.mapLocation] * settings.PARTY_STEPS_LOGGED
 	
 	def DebugRectSize(self):
 		print "{0} {1} ".format(self.rect.right - self.rect.left, self.rect.bottom-self.rect.top)
@@ -75,7 +76,7 @@ class CharacterEntity(Entity):
 		if len(self.steps) > 0:
 			if self.steps[0] != step:
 				self.steps.insert(0, step)
-			if len(self.steps) > 20:
+			if len(self.steps) > settings.PARTY_STEPS_LOGGED:
 				self.steps.pop()
 		else:
 			self.steps.insert(0, step)

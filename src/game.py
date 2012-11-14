@@ -29,7 +29,7 @@ TextBoxHelper(gameSurface, interruptEvents) #instantiate class to fill static in
 # level setup
 map.LoadMap("firstmap.tmx")
 pygame.mixer.music.load("../music/sledpuller.it")
-pygame.mixer.music.play(1)
+pygame.mixer.music.play(-1)
 map.Update() #fixes the jump at the beginning. would be best to fix the source of the problem tho.
 
 while True: # primary game loop	
