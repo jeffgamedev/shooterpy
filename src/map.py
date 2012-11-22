@@ -79,7 +79,6 @@ class Map(object):
 		self.entities.append(entity)
 		return entity
 		
-		
 	def RemoveEntity(self, entity):
 		self.RemoveEntityFromSpriteLayer(entity)
 		if entity in self.entities:
@@ -162,19 +161,36 @@ class Map(object):
 				self.AddItemEntity(index, obj.x, obj.y, trigger)
 			elif type == "character": # object is character entity
 				trigger = None
+				triggerAll = False
 				image = None
+				isEnemy = False
+				ai = None
 				layer = 1
 				for property in obj.properties:
-					if property == "layer":
-						layer = int(obj.properties[property])
+					val = obj.properties[property]
+					property = property.lower()
+					if property == "ai":
+						ai = str(val)
+					elif property == "enemy":
+						if val.lower() == "true":
+							isEnemy = True
+					elif property == "layer":
+						layer = int(val)
 					elif property == "image":
-						image = obj.properties[property]
+						image = val
 					elif property == "trigger":
 						if self.script is not None:
 							if hasattr(self.script, obj.properties[property]):
 								trigger = getattr(self.script, obj.properties[property])
+					elif property == "triggerall":
+						if val.lower() == "true":
+							triggerAll = True
+							
 				ent = self.AddNewEntity(obj.x, obj.y, layer, image)
 				ent.trigger = trigger
+				ent.ai = ai
+				ent.isEnemy = isEnemy
+				ent.triggerAll = triggerAll
 
 	def Render(self, screen):
 		if self.spriteLayers is not None:

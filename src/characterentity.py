@@ -33,7 +33,9 @@ class CharacterEntity(Entity):
 		self.playerControlled = False
 		self.followTarget = None
 		self.followIndex = 0
-		self.steps = [self.mapLocation] * settings.PARTY_STEPS_LOGGED
+		self.steps = []
+		self.ai = None
+		self.isEnemy = False
 	
 	def DebugRectSize(self):
 		print "{0} {1} ".format(self.rect.right - self.rect.left, self.rect.bottom-self.rect.top)
@@ -92,8 +94,10 @@ class CharacterEntity(Entity):
 		
 	def SetControl(self, bool):
 		'''sets the entity to player controlled settings'''
+		Entity.Player = self
 		self.playerControlled = bool
 		self.updateOffScreen = True
+		self.steps = [self.mapLocation] * settings.PARTY_STEPS_LOGGED
 
 	def Update(self):
 		'''overriden update method checks if entity should be player controlled, is following another entity, or is on a certain AI. also calls animation method.'''
@@ -102,8 +106,23 @@ class CharacterEntity(Entity):
 		elif self.followTarget is not None:
 			self.FollowCurrentTarget()
 		else:
-			self.RandomAI()
+			self.AI()
 		self.Animate()
+		
+	def AI(self):
+		if self.ai is None:
+			self.RandomAI()
+		elif self.ai == "basicEnemy":
+			self.BasicEnemyAI()
+			
+	def BasicEnemyAI(self):
+		if self.trigger == None:
+			self.trigger = self.BattlePlayer
+			
+	def BattlePlayer(self, parent):
+		self.ai = "dead"
+		self.trigger = None
+		print "begin battling player!"
 				
 	def WalkUp(self):
 		'''basic acceleration and animation setting method (UP)'''

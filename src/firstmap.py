@@ -2,14 +2,14 @@ from map import Map
 from overlay import TextBoxHelper
 
 def Start(parent):
-	print "start"
-	Tarshan = Map.CurrentMap.AddNewEntity(210, 170, 1, "tarshan.png")
-	TimeHero = Map.CurrentMap.AddNewEntity(210, 170, 1, "timehero.png")
-	Blane = Map.CurrentMap.AddNewEntity(170, 150, 1, "blane.png")
-	Blane.SetControl(True)
-	Map.CurrentMap.camera.SetTarget(Blane)	
-	Tarshan.SetFollowTarget(Blane, 6)
-	TimeHero.SetFollowTarget(Blane, 12)
+	if len(Map.CurrentMap.GetParty()) == 0:
+		Tarshan = Map.CurrentMap.AddNewEntity(210, 170, 1, "tarshan.png")
+		TimeHero = Map.CurrentMap.AddNewEntity(210, 170, 1, "timehero.png")
+		Blane = Map.CurrentMap.AddNewEntity(170, 150, 1, "blane.png")
+		Blane.SetControl(True)
+		Map.CurrentMap.camera.SetTarget(Blane)
+		Tarshan.SetFollowTarget(Blane, 6)
+		TimeHero.SetFollowTarget(Blane, 12)
 
 def Test(parent):
 	#TextBoxHelper.Instance.Notification("Picked up Computer Chip")

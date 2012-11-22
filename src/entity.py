@@ -23,8 +23,9 @@ import random
 
 class Entity(helperspygame.SpriteLayer.Sprite):
 	"""Entity class is the base class for all person-like characters in the game"""
+	Player = None
 	Path = "../gfx/sprites/"
-	def __init__(self, entityName, startX, startY, spriteFileName = None, size = (16, 12), frameSize = (17, 33), scaleFactor = settings.SPRITE_SCALE_FACTOR):
+	def __init__(self, entityName, startX, startY, spriteFileName = None, size = (14, 12), frameSize = (17, 33), scaleFactor = settings.SPRITE_SCALE_FACTOR):
 		self.mapLocation = (startX, startY)
 		self.name = entityName
 		self.layer = 0
@@ -35,11 +36,12 @@ class Entity(helperspygame.SpriteLayer.Sprite):
 		self.visible = True
 		self.collidable = True
 		self.trigger = None
+		self.triggerAll = False # if trigger effects interacting with all entities, not just player
 		self.direction = settings.DIRECTION_DOWN		
 		self.acceleration = 0.5, 0.5
 		self.maxVelocity = 5, 5
 		self.currentAnimation = None
-		self.spriteOffset = 0, -18
+		self.spriteOffset = -4, -18
 		self.frameSize = frameSize[0], frameSize[1]
 		self.framesPerRow = 5
 		self.updateOffScreen = False
@@ -136,7 +138,10 @@ class Entity(helperspygame.SpriteLayer.Sprite):
 						if ent.collidable and self.collidable: # its a physical collision
 							self.PushAgainstEntity(ent)
 						if ent.trigger is not None: # theres a collision and should be an even triggered
-							ent.trigger(ent)
+							if self is Entity.Player:
+								ent.trigger(ent)
+							elif ent.triggerAll:
+								ent.trigger(ent)
 	
 	def PushAgainstEntity(self, ent):
 		if self.velocityX > 0 and self.touchRect.right <= ent.touchRect.right:
