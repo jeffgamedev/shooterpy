@@ -44,6 +44,11 @@ class CharacterEntity(Entity):
 		if self.playerControlled:
 			self.LogSteps()
 			
+	def SetLocation(self, coordinate):
+		for i in range(len(self.steps)):
+			self.steps[i] = coordinate
+		super(CharacterEntity, self).SetLocation(coordinate)
+			
 	def SetFollowTarget(self, entity, followIndex = 12):
 		'''sets the target character entity to follow, specifying which footstep with followIndex'''
 		self.followTarget = entity

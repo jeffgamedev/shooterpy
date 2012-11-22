@@ -3,17 +3,18 @@ from overlay import TextBoxHelper
 
 def Start(parent):
 	print "start"
-	Tarshan = Map.CurrentMap.AddEntity(210, 170, 1, "tarshan.png")
-	TimeHero = Map.CurrentMap.AddEntity(210, 170, 1, "timehero.png")
-	Blane = Map.CurrentMap.AddEntity(170, 150, 1, "blane.png")
+	Tarshan = Map.CurrentMap.AddNewEntity(210, 170, 1, "tarshan.png")
+	TimeHero = Map.CurrentMap.AddNewEntity(210, 170, 1, "timehero.png")
+	Blane = Map.CurrentMap.AddNewEntity(170, 150, 1, "blane.png")
 	Blane.SetControl(True)
 	Map.CurrentMap.camera.SetTarget(Blane)	
 	Tarshan.SetFollowTarget(Blane, 6)
 	TimeHero.SetFollowTarget(Blane, 12)
 
 def Test(parent):
+	#TextBoxHelper.Instance.Notification("Picked up Computer Chip")
+	Map.CurrentMap.Switch("elmappo.tmx", (610, 170))
 	Map.CurrentMap.RemoveEntity(parent)
-	TextBoxHelper.Instance.Notification("Picked up Computer Chip")
 	
 def GuardJoin(parent):
 	TextBoxHelper.Instance.TextBox("TL_port_blu.bmp", "Hello sir Blane. I shall join you on your journey.")

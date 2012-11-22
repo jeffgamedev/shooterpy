@@ -22,6 +22,17 @@ class Map(object):
 		self.updatingEntities = []
 		self.script = None
 		
+	def GetParty(self):
+		party = []
+		for entity in self.entities:
+			if hasattr(entity, "playerControlled"):
+				if entity.playerControlled == True:
+					party.append(entity)
+			if hasattr(entity, "followTarget") and entity not in party:
+				if entity.followTarget is not None:
+					party.insert(0, entity)
+		return party
+		
 	def GetPlayer(self):
 		for entity in self.entities:
 			if hasattr(entity, "playerControlled"):
@@ -53,8 +64,11 @@ class Map(object):
 			return self.mapData.layers[layer].content2D[x][y]
 		return -1
 		
-	def AddEntity(self, x, y, layer=1, fileName ="blanea.png"):
+	def AddNewEntity(self, x, y, layer=1, fileName ="blanea.png"):
 		entity = CharacterEntity("entity", x, y, fileName)
+		return self.AddEntity(entity, layer)
+		
+	def AddEntity(self, entity, layer):
 		self.spriteLayers[layer].add_sprite(entity)		
 		self.entities.append(entity)
 		return entity
@@ -65,15 +79,26 @@ class Map(object):
 		self.entities.append(entity)
 		return entity
 		
+		
 	def RemoveEntity(self, entity):
+		self.RemoveEntityFromSpriteLayer(entity)
 		if entity in self.entities:
 			self.entities.remove(entity)
 		if entity in self.updatingEntities:
 			self.updatingEntities.remove(entity)
+		
+	def RemoveEntityFromSpriteLayer(self, entity):
 		for spritelayer in self.spriteLayers:
 			if hasattr(spritelayer, 'remove_sprite'):
 				spritelayer.remove_sprite(entity)
-		print "removed entity"
+				print "removed entity from spritelayer: ", entity
+		
+	def Switch(self, mapName, coordinate, layer=1):
+		party = self.GetParty()
+		self.LoadMap(mapName) 
+		for char in party:
+			char.SetLocation(coordinate)
+			self.AddEntity(char, layer)
 
 	def GetObs(self, x, y):
 		if x >= 0 and  y >= 0 and x < self.mapData.width and y < self.mapData.height:
@@ -83,18 +108,21 @@ class Map(object):
 		
 	def LoadMap(self, name):
 		self.mapData = tiledtmxloader.tmxreader.TileMapParser().parse_decode(Map.Path + name)
+		self.entities = []
+		self.updatingEntities = []
 		self.resources.load(self.mapData)
 		self.spriteLayers = tiledtmxloader.helperspygame.get_layers_from_map(self.resources)
 		self.camera.SetBoundaries(0, 0, (self.mapData.width * self.mapData.tilewidth)-(settings.SCREEN_WIDTH), (self.mapData.height * self.mapData.tileheight)-(settings.SCREEN_HEIGHT))
-		#find obstructions layer
 		for i in range(len(self.mapData.layers)):
-			if self.mapData.layers[i].name == 'obstruction':
+			if self.mapData.layers[i].name == 'obstruction': #find obstructions layer
 				self.obstructions = self.mapData.layers[i].content2D
 				self.mapData.layers.pop(i)
 				self.spriteLayers.pop(i)
 				break
-				
-		if self.mapData.properties["script"]:
+		
+		self.script = None # clear script
+		
+		if "script" in self.mapData.properties:
 			try:
 				self.script = __import__( self.mapData.properties["script"] )
 			except:
@@ -102,7 +130,7 @@ class Map(object):
 				print "no script file of name " + self.mapData.properties["script"]
 		else:
 			print "no map property 'script'"
-			
+
 		objectList = None
 		#find object layer
 		for i in range(len(self.mapData.layers)):
@@ -145,7 +173,7 @@ class Map(object):
 						if self.script is not None:
 							if hasattr(self.script, obj.properties[property]):
 								trigger = getattr(self.script, obj.properties[property])
-				ent = self.AddEntity(obj.x, obj.y, layer, image)
+				ent = self.AddNewEntity(obj.x, obj.y, layer, image)
 				ent.trigger = trigger
 
 	def Render(self, screen):

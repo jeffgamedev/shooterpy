@@ -161,6 +161,10 @@ class Entity(helperspygame.SpriteLayer.Sprite):
 		elif self.frame != 0:
 			self.frame = 0
 			self.SetFrame(0)
+			
+	def SetLocation(self, coordinate):
+		self.mapLocation = coordinate
+		self.Move()
 	
 	def SetFrame(self, frame):
 		if self.currentAnimation is not None:
