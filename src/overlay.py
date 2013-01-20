@@ -39,9 +39,7 @@ class NotificationBox(InterruptEvent):
         self.borderRect = pygame.Rect((2,2), (self.size[0]-4, self.size[1]-4))
         self.DrawNotification(message)
         
-    def DrawNotification(self, message):
-        
-        
+    def DrawNotification(self, message):        
         self.DrawBoxToTempSurface()
         self.DrawTextToTempSurface(message)
     

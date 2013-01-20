@@ -1,7 +1,8 @@
 import settings
 
 class Camera(object):
-	def __init__(self, renderer):		
+	def __init__(self, renderer):
+		"""Constructor."""
 		self.position = 0, 0
 		self.lastPosition = 0, 0
 		self.mode = "follow"
@@ -11,12 +12,15 @@ class Camera(object):
 		self.renderer.set_camera_position_and_size(self.position[0], self.position[1], settings.SCREEN_WIDTH, settings.SCREEN_HEIGHT, "topleft")
 	
 	def SetBoundaries(self, left, top, width, height):
+		"""Set camera boundaries."""
 		self.bounds = left, top, width, height
 	
 	def SetTarget(self, entity):
+		"""Sets an entity as the target of the camera."""
 		self.target = entity
 		
 	def Update(self):
+		"""Updates the camera."""
 		if self.mode == "follow" and self.target != None:
 			self.position = (self.target.mapLocation[0] - (self.target.size[0])/2) - (settings.SCREEN_WIDTH/2), (self.target.mapLocation[1] - (self.target.size[1])/2) - (settings.SCREEN_HEIGHT/2)
 		if self.position != self.lastPosition:

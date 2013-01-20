@@ -31,6 +31,7 @@ class Input:
 			if event.type == KEYUP:
 				if event.key in Input.keyboard:
 					Input.keyboard[event.key] = 0
+					
 			elif event.type == KEYDOWN:
 				if event.key in Input.keyboard:
 					Input.keyboard[event.key] = 1
@@ -67,3 +68,4 @@ class Input:
 			Input.keyboard["down"] = 1
 		else:
 			Input.keyboard["down"] = 0
+			

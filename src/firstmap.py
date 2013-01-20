@@ -3,9 +3,9 @@ from overlay import TextBoxHelper
 
 def Start(parent):
 	if len(Map.CurrentMap.GetParty()) == 0:
-		Tarshan = Map.CurrentMap.AddNewEntity(210, 170, 1, "tarshan.png")
-		TimeHero = Map.CurrentMap.AddNewEntity(210, 170, 1, "timehero.png")
-		Blane = Map.CurrentMap.AddNewEntity(170, 150, 1, "blane.png")
+		Tarshan = Map.CurrentMap.AddCharacterEntity(210, 170, 1, "tarshan.png")
+		TimeHero = Map.CurrentMap.AddCharacterEntity(210, 170, 1, "timehero.png")
+		Blane = Map.CurrentMap.AddCharacterEntity(170, 150, 1, "blane.png")
 		Blane.SetControl(True)
 		Map.CurrentMap.camera.SetTarget(Blane)
 		Tarshan.SetFollowTarget(Blane, 6)
@@ -13,7 +13,7 @@ def Start(parent):
 
 def Test(parent):
 	#TextBoxHelper.Instance.Notification("Picked up Computer Chip")
-	Map.CurrentMap.Switch("elmappo.tmx", (610, 170))
+	Map.CurrentMap.ChangeMap("elmappo.tmx", (610, 170))
 	Map.CurrentMap.RemoveEntity(parent)
 	
 def GuardJoin(parent):

@@ -16,7 +16,6 @@ from map import Map
 from input import Input
 from overlay import TextBoxHelper, InterruptEventSystem
 
-
 # game dependencies initiation
 pygame.init()
 fpsClock = pygame.time.Clock()
@@ -26,11 +25,12 @@ background_color = pygame.Color( 0, 0, 0)
 map = Map()
 interruptEvents = InterruptEventSystem(gameSurface)
 TextBoxHelper(gameSurface, interruptEvents) #instantiate class to fill static instance
+
 # level setup
 map.LoadMap("firstmap.tmx")
 pygame.mixer.music.load("../music/sledpuller.it")
 pygame.mixer.music.play(-1)
-map.Update() #fixes the jump at the beginning. would be best to fix the source of the problem tho.
+map.Update() # fixes the jump at the beginning. would be best to fix the source of the problem tho.
 
 while True: # primary game loop	
 	##### LOGIC UPDATES #####
@@ -38,9 +38,11 @@ while True: # primary game loop
 	if not interruptEvents.HasActiveEvent(): # Map Logic does not update while an interrupt event is waiting to be dismissed!
 		map.Update()
 	Input.Update(interruptEvents)
+	
 	##### DISPLAY UPDATES #####	
 	map.Render(gameSurface)	
 	interruptEvents.Display()
 	pygame.display.update()
+	
 	#Framerate Regulation
 	fpsClock.tick(settings.FRAMES_PER_SECOND);

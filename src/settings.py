@@ -5,7 +5,8 @@
 #
 # Description: 	This file is used to store game-wide settings
 #	so as to reduce the amount of refactoring done if
-#	one of these settings need to change.
+#	one of these settings need to change. This file should not
+#	contain any methods.
 #
 ############################################################
 
@@ -38,18 +39,18 @@ TILE_WIDTH = 32
 TILE_HEIGHT = 32
 
 # Player Control Settings
-FRICTION = 0.6
-COLLISION_SLOWDOWN = .8
-PUSH_SPEED = 1
-PARTY_STEPS_LOGGED = 20
+FRICTION = 0.6 # TODO: Comment. In pixels?
+COLLISION_SLOWDOWN = .8 # TODO: Comment. In pixels?
+PUSH_SPEED = 1 # TODO: Is this pixels pushed? Please specifiy in constant name.
+PARTY_STEPS_LOGGED = 20 # What is this for?
 
 # Sprite Settings
 SPRITE_SCALE_FACTOR = 2
-ENTITY_ANIMATION_SPEED = 0.25
+ENTITY_ANIMATION_SPEED = 0.25 # TODO: Comment. What does this mean? every quarter of a second, the frame updates? If so, please change name to SECONDS_PER_FRAME_CHANGE.
 DIRECTION_UP = 0
 DIRECTION_DOWN = 1
 DIRECTION_LEFT = 2
 DIRECTION_RIGHT = 3
 
-def Clamp(num, minNum, maxNum):
+def Clamp(num, minNum, maxNum): # TODO: Should not be in settings.py. Maybe an EntityHelper.py or something if it's used outside of entity.py.
 	return max(minNum, min(num, maxNum))
