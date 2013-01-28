@@ -24,7 +24,7 @@ class Input:
 	interruptWait = False
 	
 	@staticmethod
-	def Update(interruptEventSystemInstance):
+	def Update(game):
 		for event in pygame.event.get():
 			if event.type == QUIT:
 				pygame.quit()
@@ -37,11 +37,11 @@ class Input:
 				if event.key in Input.keyboard:
 					Input.keyboard[event.key] = 1
 					
-		if interruptEventSystemInstance.HasActiveEvent():
-			if interruptEventSystemInstance.currentEvent.eventName == "TextBox" or interruptEventSystemInstance.currentEvent.eventName == "NotificationBox":
-				Input.TextBoxInput(interruptEventSystemInstance)
-			elif interruptEventSystemInstance.currentEvent.eventName == "MenuBox": #ype(interruptEventSystemInstance.currentEvent) is MenuBox:
-				Input.MenuBoxInput(interruptEventSystemInstance)
+		if game.interruptEventSystem.HasActiveEvent():
+			if game.interruptEventSystem.currentEvent.eventName == "TextBox" or game.interruptEventSystem.currentEvent.eventName == "NotificationBox":
+				Input.TextBoxInput(game.interruptEventSystem)
+			elif game.interruptEventSystem.currentEvent.eventName == "MenuBox": #ype(game.interruptEventSystem.currentEvent) is MenuBox:
+				Input.MenuBoxInput(game.interruptEventSystem)
 		else:
 			Input.StandardInput()
 
