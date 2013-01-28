@@ -10,9 +10,9 @@
 #	can share is declared here.
 ############################################################
 import settings
-from input import Input
+from Input import Input
 from random import randint
-from entity import Entity
+from Entity import Entity
 
 # Animation frame patterns.
 walkDown = [0, 1, 2, 1, 0, 3, 4, 3]

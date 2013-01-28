@@ -1,7 +1,7 @@
 # Unit tests for menu class
-import unittest, overlay
+import unittest, MenuBox
 
-class MenuTest(unittest.TestCase):
+class MenuBoxTest(unittest.TestCase):
     def setUp(self):
         self.destination = 0 # Placeholder for pygame surface.
         self.testMenu = overlay.MenuBox( self.destination, ["Selection 1", "Selection 2", "Selection 3"], [0, 0, 0])

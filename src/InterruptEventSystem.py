@@ -1,3 +1,5 @@
+import Queue
+
 class InterruptEventSystem:
 	"""Handles interrupt Event functionality and user interaction for the main game loop"""
 

@@ -7,7 +7,7 @@
 #
 ############################################################
 
-import entity
+import Entity
 
 class NPC(entity.Entity):
     """Contains entity information distinct to NPCs"""

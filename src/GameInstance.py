@@ -1,6 +1,6 @@
 import settings, pygame
-from map import Map
-from overlay import InterruptEventSystem
+from Map import Map
+from InterruptEventSystem import InterruptEventSystem
 
 class GameInstance:
 	"""Main repository for game data when running.""" 

@@ -1,5 +1,4 @@
-from map import Map
-from overlay import TextBoxHelper
+from Map import Map
 
 def Start(parent):
 	print "elmappo!"

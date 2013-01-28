@@ -1,4 +1,4 @@
-from overlay import NotificationBox
+from NotificationBox import NotificationBox
 
 def option1(game):
 	game.interruptEventSystem.Add(NotificationBox(game, "You chose option 1."))

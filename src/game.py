@@ -14,13 +14,13 @@ pygame.init() # needs to be initialized for static members of other classes
 
 import settings # for constants, etc
 from pygame.locals import *
-from map import Map
-from input import Input
+from Map import Map
+from Input import Input
 from InterruptEventSystem import InterruptEventSystem
 from MenuBox import MenuBox
 from TextBox import TextBox
 from NotificationBox import NotificationBox
-from gameInstance import GameInstance
+from GameInstance import GameInstance
 import gameMenu
 
 # game dependencies initiation
@@ -31,7 +31,6 @@ background_color = pygame.Color( 0, 0, 0)
 
 game = GameInstance()
 
-game.interruptEventSystem.Add(TextBox(game, "blane.png", "hi"))
 game.interruptEventSystem.Add(MenuBox(game, 100, 200, ["one", "two", "three"], [gameMenu.option1, gameMenu.option2, gameMenu.option3]))
 
 # level setup

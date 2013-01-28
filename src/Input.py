@@ -1,6 +1,8 @@
 import pygame
 import sys
-from overlay import MenuBox, TextBox, NotificationBox
+from MenuBox import MenuBox
+from TextBox import TextBox
+from NotificationBox import NotificationBox
 from pygame.locals import *
 
 class Input:

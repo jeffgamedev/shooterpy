@@ -1,4 +1,4 @@
-from entity import Entity
+from Entity import Entity
 
 class ItemEntity(Entity):
 	def __init__(self, itemID, startX, startY, trigger = None):

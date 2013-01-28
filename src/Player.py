@@ -6,7 +6,7 @@
 # Description:
 ############################################################
 
-import entity, player_attributes
+import Entity, PlayerAttributes
 
 class Player(entity.Entity):
     """The Player class is the class for members of the user's party."""

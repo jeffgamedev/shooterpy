@@ -1,4 +1,4 @@
-import settings
+import pygame, settings
 from InterruptEvent import InterruptEvent
 
 class NotificationBox(InterruptEvent):
@@ -6,7 +6,7 @@ class NotificationBox(InterruptEvent):
 	"""Item Procured, etc"""
 	def __init__(self, game, message, position=settings.NOTIFICATION_BOX_POSITION, size=settings.NOTIFICATION_BOX_SIZE, bgcolor=settings.TEXTBOX_COLOR, textcolor=settings.TEXTBOX_TEXT_COLOR, borderColor=settings.TEXTBOX_BORDER_COLOR, opacity=settings.TEXTBOX_OPACITY):
 		"""Setup for Notification Box """
-		self.font = settigns.NOTIFICATION_FONT
+		self.font = settings.NOTIFICATION_FONT
 		self.eventName = "NotificationBox"
 		
 		self.destinationSurface = game.gameSurface  # eg. the screen

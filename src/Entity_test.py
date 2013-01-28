@@ -1,6 +1,6 @@
 # Test cases for Entity class
 
-import unittest, entity
+import unittest, Entity
 
 class EntityTest(unittest.TestCase):
     def setUp(self):
