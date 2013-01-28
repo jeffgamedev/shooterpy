@@ -1,5 +1,6 @@
 import pygame
 import sys
+from overlay import MenuBox, TextBox, NotificationBox
 from pygame.locals import *
 
 class Input:
@@ -37,18 +38,36 @@ class Input:
 					Input.keyboard[event.key] = 1
 					
 		if interruptEventSystemInstance.HasActiveEvent():
-			Input.TextBoxInput(interruptEventSystemInstance)
+			if interruptEventSystemInstance.currentEvent.eventName == "TextBox" or interruptEventSystemInstance.currentEvent.eventName == "NotificationBox":
+				Input.TextBoxInput(interruptEventSystemInstance)
+			elif interruptEventSystemInstance.currentEvent.eventName == "MenuBox": #ype(interruptEventSystemInstance.currentEvent) is MenuBox:
+				Input.MenuBoxInput(interruptEventSystemInstance)
 		else:
 			Input.StandardInput()
 
 	@staticmethod
 	def TextBoxInput(textBoxSystemInstance):
-		
+		print "textbox input"
 		if Input.keyboard[K_RETURN] and Input.interruptWait == False:
 			textBoxSystemInstance.Dismiss()
 			Input.interruptWait = True
 		elif not Input.keyboard[K_RETURN] and Input.interruptWait == True:
 			Input.interruptWait = False
+			
+	@staticmethod
+	def MenuBoxInput(textBoxSystemInstance):
+
+		print "menubox input"
+		if Input.keyboard[K_RETURN] and Input.interruptWait == False:
+			tempEvent = textBoxSystemInstance.currentEvent
+			textBoxSystemInstance.Dismiss()
+			tempEvent.methodList[tempEvent.selected]()
+		if Input.keyboard[K_UP] and Input.interruptWait == False:
+			textBoxSystemInstance.currentEvent.updateCursorPosition("up")
+		if Input.keyboard[K_DOWN] and Input.interruptWait == False:
+			textBoxSystemInstance.currentEvent.updateCursorPosition("down")
+
+
 		
 	@staticmethod
 	def StandardInput():

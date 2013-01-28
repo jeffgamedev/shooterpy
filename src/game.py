@@ -1,5 +1,5 @@
-############################################################
 # File:		game.py
+############################################################
 # Project:	Shooter 1, II
 # Date Created:	Oct 13, 2012	
 #
@@ -15,6 +15,7 @@ from pygame.locals import *
 from map import Map
 from input import Input
 from overlay import TextBoxHelper, InterruptEventSystem
+import gameMenu
 
 # game dependencies initiation
 pygame.init()
@@ -25,18 +26,21 @@ background_color = pygame.Color( 0, 0, 0)
 map = Map()
 interruptEvents = InterruptEventSystem(gameSurface)
 TextBoxHelper(gameSurface, interruptEvents) #instantiate class to fill static instance
+TextBoxHelper.Instance.MenuBox(200, 150, ["FrogVolt!", "ShadowbladeOldman", "Blanez", "Master of the Obvious!"], [gameMenu.option1, gameMenu.option2, gameMenu.option3, gameMenu.option4]);
 
 # level setup
 map.LoadMap("firstmap.tmx")
 pygame.mixer.music.load("../music/sledpuller.it")
 pygame.mixer.music.play(-1)
 map.Update() # fixes the jump at the beginning. would be best to fix the source of the problem tho.
+pygame.key.set_repeat()
 
 while True: # primary game loop	
 	##### LOGIC UPDATES #####
 	interruptEvents.Update()
 	if not interruptEvents.HasActiveEvent(): # Map Logic does not update while an interrupt event is waiting to be dismissed!
 		map.Update()
+		
 	Input.Update(interruptEvents)
 	
 	##### DISPLAY UPDATES #####	
