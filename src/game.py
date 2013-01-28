@@ -10,22 +10,28 @@
 #
 ############################################################
 import pygame
+pygame.init() # needs to be initialized for static members of other classes
+
 import settings # for constants, etc
 from pygame.locals import *
 from map import Map
 from input import Input
-from overlay import InterruptEventSystem, MenuBox, TextBox, NotificationBox
+from InterruptEventSystem import InterruptEventSystem
+from MenuBox import MenuBox
+from TextBox import TextBox
+from NotificationBox import NotificationBox
 from gameInstance import GameInstance
 import gameMenu
 
 # game dependencies initiation
-pygame.init()
+
 fpsClock = pygame.time.Clock()
 pygame.display.set_caption('Shooter 1, II')
 background_color = pygame.Color( 0, 0, 0)
 
 game = GameInstance()
 
+game.interruptEventSystem.Add(TextBox(game, "blane.png", "hi"))
 game.interruptEventSystem.Add(MenuBox(game, 100, 200, ["one", "two", "three"], [gameMenu.option1, gameMenu.option2, gameMenu.option3]))
 
 # level setup
