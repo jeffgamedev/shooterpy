@@ -4,7 +4,7 @@ import unittest, Entity
 
 class EntityTest(unittest.TestCase):
     def setUp(self):
-        self.e = entity.Entity("Name", 0, 0)
+        self.e = Entity.Entity("Name", 0, 0)
     def test_name(self):
         self.assertEqual(self.e.name, "Name")
     def test_location(self):

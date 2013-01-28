@@ -2,10 +2,10 @@ import tiledtmxloader
 import settings
 import tiledtmxloader.helperspygame
 import pygame
-from camera import Camera
-from entity import Entity
-from characterentity import CharacterEntity
-from itementity import ItemEntity
+from Camera import Camera
+from Entity import Entity
+from CharacterEntity import CharacterEntity
+from ItemEntity import ItemEntity
 
 class Map(object):
 	Path = "../maps/"

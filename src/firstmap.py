@@ -1,5 +1,5 @@
-from map import Map
-from overlay import TextBoxHelper
+from Map import Map
+from Map import *
 
 def Start(parent):
 	if len(Map.CurrentMap.GetParty()) == 0:
