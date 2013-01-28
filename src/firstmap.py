@@ -17,7 +17,7 @@ def Test(parent):
 	Map.CurrentMap.RemoveEntity(parent)
 	
 def GuardJoin(parent):
-	TextBoxHelper.Instance.TextBox("TL_port_blu.bmp", "Hello sir Blane. I shall join you on your journey.")
-	TextBoxHelper.Instance.Notification("GUARD Joined the Group")
+	#TextBoxHelper.Instance.TextBox("TL_port_blu.bmp", "Hello sir Blane. I shall join you on your journey.")
+	#TextBoxHelper.Instance.Notification("GUARD Joined the Group")
 	parent.trigger = None
 	parent.SetFollowTarget(Map.CurrentMap.GetPlayer(), 18)

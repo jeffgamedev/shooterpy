@@ -28,7 +28,7 @@ class InterruptEvent:
 class MenuBox(InterruptEvent):
 	"""Single menu box. Can be strung together to create a complex menu system."""
 	
-	def __init__(self, destinationSurface, positionLeft, positionTop, menuFont, itemsList, methodList):
+	def __init__(self, game, positionLeft, positionTop, itemsList, methodList):
 		"""Constructor."""
 		self.eventName = "MenuBox"
 		
@@ -44,10 +44,10 @@ class MenuBox(InterruptEvent):
 		self.borderColor = settings.TEXTBOX_BORDER_COLOR
 		self.pointerGraphic = pygame.image.load("..\\gfx\\menu\\menu_pointer.png")
 		
-		self.destinationSurface = destinationSurface
+		self.destinationSurface = game.gameSurface
 		self.menuItems = itemsList
 		self.selected = 0
-		self.font = menuFont
+		self.font = pygame.font.Font('freesansbold.ttf', settings.NOTIFICATION_FONT_SIZE)
 		self.textcolor = settings.TEXTBOX_TEXT_COLOR
 		
 		self.textMarginLeft = settings.MENU_BOX_TEXT_MARGIN + 20
@@ -61,8 +61,6 @@ class MenuBox(InterruptEvent):
 		self.borderRect = (1, 1, self.size[0] - 3, self.size[1] - 3)
 		
 		self.UpdateGraphics()
-		
-
 		
 	def computeMenuSize(self):
 		"""Initial width and height computation based on length of longest menu item and number of items respectively.
@@ -122,14 +120,15 @@ class MenuBox(InterruptEvent):
 			raise ValueError("update cursor position only accepts \"up\" and \"down\" for the direction arguemnt.")
 	
 class NotificationBox(InterruptEvent):
+	
+			
 	"""Item Procured, etc"""
-	def __init__(self, destinationSurface, font, message, position=settings.NOTIFICATION_BOX_POSITION, size=settings.NOTIFICATION_BOX_SIZE, bgcolor=settings.TEXTBOX_COLOR, textcolor=settings.TEXTBOX_TEXT_COLOR, borderColor=settings.TEXTBOX_BORDER_COLOR, opacity=settings.TEXTBOX_OPACITY):
+	def __init__(self, game, message, position=settings.NOTIFICATION_BOX_POSITION, size=settings.NOTIFICATION_BOX_SIZE, bgcolor=settings.TEXTBOX_COLOR, textcolor=settings.TEXTBOX_TEXT_COLOR, borderColor=settings.TEXTBOX_BORDER_COLOR, opacity=settings.TEXTBOX_OPACITY):
 		"""Setup for Notification Box """
-		
+		self.font = pygame.font.Font('freesansbold.ttf', settings.NOTIFICATION_FONT_SIZE)
 		self.eventName = "NotificationBox"
 		
-		self.destinationSurface = destinationSurface  # eg. the screen
-		self.font = font  # pygame font object
+		self.destinationSurface = game.gameSurface  # eg. the screen
 		
 		self.bgcolor = bgcolor  # should be in (r, g, b) format
 		self.borderColor = borderColor  # should be in (r, g, b) format
@@ -143,7 +142,7 @@ class NotificationBox(InterruptEvent):
 		self.tempSurface = pygame.Surface(self.size)
 		
 		# Set position based on size
-		self.position = (destinationSurface.get_width() / 2 - self.size[0] / 2, position[1]) 
+		self.position = (self.destinationSurface.get_width() / 2 - self.size[0] / 2, position[1]) 
 		
 		self.rect = pygame.Rect (self.position, self.size)
 		self.borderRect = pygame.Rect((2, 2), (self.size[0] - 4, self.size[1] - 4))
@@ -170,16 +169,16 @@ class NotificationBox(InterruptEvent):
 		self.tempSurface.blit(label, (self.textMargin, self.textMargin))
 	
 class TextBox(InterruptEvent):
-	def __init__(self, destinationSurface, font, portrait, message, position=settings.TEXTBOX_POSITION, size=settings.TEXTBOX_SIZE, bgcolor=settings.TEXTBOX_COLOR, textcolor=settings.TEXTBOX_TEXT_COLOR, borderColor=settings.TEXTBOX_BORDER_COLOR, opacity=settings.TEXTBOX_OPACITY):
+	def __init__(self, game, portrait, message, position=settings.TEXTBOX_POSITION, size=settings.TEXTBOX_SIZE, bgcolor=settings.TEXTBOX_COLOR, textcolor=settings.TEXTBOX_TEXT_COLOR, borderColor=settings.TEXTBOX_BORDER_COLOR, opacity=settings.TEXTBOX_OPACITY):
 		"""Does all the set up for the look and position of the TextBox 
 		on the screen. Message is set separately. Idea: Create one textbox for the game, and
 		reuse it as many times as needed by resetting the text and then calling Show()."""
 		
 		self.eventName = "TextBox"
 		
-		self.destinationSurface = destinationSurface  # eg. the screen
+		self.destinationSurface = game.gameSurface  # eg. the screen
 		self.tempSurface = pygame.Surface(size)  # holding place to be displayed
-		self.font = font  # pygame font object
+		self.font = pygame.font.Font('freesansbold.ttf', settings.NOTIFICATION_FONT_SIZE)
 		self.bgcolor = bgcolor  # should be in (r, g, b) format
 		self.borderColor = borderColor  # should be in (r, g, b) format
 		self.rect = pygame.Rect (position, size)
@@ -320,26 +319,3 @@ class InterruptEventSystem:
 	def Add(self, eventObject):
 		"""Adds an event to the queue"""
 		self.eventQueue.put(eventObject)
-
-class TextBoxHelper(object):  # TODO: Is this being used?
-	Instance = None
-	def __init__(self, surface, interruptEvents, textboxFont=None, notificationFont=None):
-		TextBoxHelper.Instance = self
-		self.surface = surface
-		self.interruptEvents = interruptEvents
-		self.textboxFont = textboxFont
-		self.notificationFont = notificationFont
-		if notificationFont is None:
-			self.notificationFont = pygame.font.Font('freesansbold.ttf', settings.NOTIFICATION_FONT_SIZE)		
-		if textboxFont is None:
-			self.textboxFont = pygame.font.Font('freesansbold.ttf', settings.TEXTBOX_FONT_SIZE)		
-		
-	def TextBox(self, portrait=None, text=""):
-		self.interruptEvents.Add(TextBox(self.surface, self.textboxFont, portrait, text))
-		
-	def Notification(self, text=""):
-		self.interruptEvents.Add(NotificationBox(self.surface, self.notificationFont, text))
-
-	def MenuBox(self, positionLeft=settings.MENU_BOX_POSITION_LEFT, positionTop=settings.MENU_BOX_POSITION_TOP, optionList=["New Game", "Save Game", "Load Game", "Exit Game"], methodList=[1, 2, 3, 4]):
-		self.interruptEvents.Add(MenuBox(self.surface, positionLeft, positionTop, self.notificationFont, optionList, methodList))
-		

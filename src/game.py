@@ -1,5 +1,5 @@
-# File:		game.py
 ############################################################
+# File:		game.py
 # Project:	Shooter 1, II
 # Date Created:	Oct 13, 2012	
 #
@@ -14,7 +14,7 @@ import settings # for constants, etc
 from pygame.locals import *
 from map import Map
 from input import Input
-from overlay import TextBoxHelper, InterruptEventSystem
+from overlay import InterruptEventSystem, MenuBox, TextBox, NotificationBox
 from gameInstance import GameInstance
 import gameMenu
 
@@ -26,8 +26,7 @@ background_color = pygame.Color( 0, 0, 0)
 
 game = GameInstance()
 
-TextBoxHelper(game.gameSurface, game.interruptEventSystem) #instantiate class to fill static instance
-TextBoxHelper.Instance.MenuBox(200, 150, ["FrogVolt!", "ShadowbladeOldman", "Blanez", "Master of the Obvious!"], [gameMenu.option1, gameMenu.option2, gameMenu.option3, gameMenu.option4]);
+game.interruptEventSystem.Add(MenuBox(game, 100, 200, ["one", "two", "three"], [gameMenu.option1, gameMenu.option2, gameMenu.option3]))
 
 # level setup
 pygame.mixer.music.load("../music/sledpuller.it")

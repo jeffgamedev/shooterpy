@@ -39,33 +39,33 @@ class Input:
 					
 		if game.interruptEventSystem.HasActiveEvent():
 			if game.interruptEventSystem.currentEvent.eventName == "TextBox" or game.interruptEventSystem.currentEvent.eventName == "NotificationBox":
-				Input.TextBoxInput(game.interruptEventSystem)
+				Input.TextBoxInput(game)
 			elif game.interruptEventSystem.currentEvent.eventName == "MenuBox": #ype(game.interruptEventSystem.currentEvent) is MenuBox:
-				Input.MenuBoxInput(game.interruptEventSystem)
+				Input.MenuBoxInput(game)
 		else:
 			Input.StandardInput()
 
 	@staticmethod
-	def TextBoxInput(textBoxSystemInstance):
+	def TextBoxInput(game):
 		print "textbox input"
 		if Input.keyboard[K_RETURN] and Input.interruptWait == False:
-			textBoxSystemInstance.Dismiss()
+			game.interruptEventSystem.Dismiss()
 			Input.interruptWait = True
 		elif not Input.keyboard[K_RETURN] and Input.interruptWait == True:
 			Input.interruptWait = False
 			
 	@staticmethod
-	def MenuBoxInput(textBoxSystemInstance):
-
+	def MenuBoxInput(game):
 		print "menubox input"
 		if Input.keyboard[K_RETURN] and Input.interruptWait == False:
-			tempEvent = textBoxSystemInstance.currentEvent
-			textBoxSystemInstance.Dismiss()
-			tempEvent.methodList[tempEvent.selected]()
+			tempEvent = game.interruptEventSystem.currentEvent
+			game.interruptEventSystem.Dismiss()
+			tempEvent.methodList[tempEvent.selected](game)
+			Input.interruptWait = True
 		if Input.keyboard[K_UP] and Input.interruptWait == False:
-			textBoxSystemInstance.currentEvent.updateCursorPosition("up")
+			game.interruptEventSystem.currentEvent.updateCursorPosition("up")
 		if Input.keyboard[K_DOWN] and Input.interruptWait == False:
-			textBoxSystemInstance.currentEvent.updateCursorPosition("down")
+			game.interruptEventSystem.currentEvent.updateCursorPosition("down")
 
 
 		
