@@ -1,5 +1,7 @@
-import pygame, settings
+import pygame, settings, os
 from InterruptEvent import InterruptEvent
+
+GFX_PATH = os.path.join('..','gfx','menu')
 
 class MenuBox(InterruptEvent):
 	"""Single menu box. Can be strung together to create a complex menu system."""
@@ -18,7 +20,9 @@ class MenuBox(InterruptEvent):
 		self.bgcolor = settings.TEXTBOX_COLOR
 		self.opacity = settings.TEXTBOX_OPACITY
 		self.borderColor = settings.TEXTBOX_BORDER_COLOR
-		self.pointerGraphic = pygame.image.load("..\\gfx\\menu\\menu_pointer.png")
+
+		pointerGraphicPath = os.path.join(GFX_PATH, 'menu_pointer.png')
+		self.pointerGraphic = pygame.image.load(pointerGraphicPath)
 		
 		self.destinationSurface = game.gameSurface
 		self.menuItems = itemsList
